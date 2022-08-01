@@ -1,0 +1,9 @@
+.bak
+.DS_Store
+node_modules
+/cjs
+/esm5
+/types
+/libs
+/build
+/bin

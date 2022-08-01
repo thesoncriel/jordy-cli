@@ -1,0 +1,65 @@
+{
+  "name": "ts-fe-cli",
+  "version": "0.1.0",
+  "description": "CLI tool for front-end develop with ts-fe-toolkit",
+  "main": "packages/index.js",
+  "scripts": {
+    "clean": "rimraf bin",
+    "bundle": "esbuild packages/index.ts --bundle --platform=node --outfile=bin/index.js",
+    "build": "npm-run-all clean bundle",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "prettier": "prettier './packages/**/*.ts'",
+    "lint": "eslint 'packages/**'",
+    "run:feat": "node bin feat add theson",
+    "test:feat:theson": "npm run build && node bin feat add theson",
+    "test:feat:nodeFight": "npm run build && node bin feat add theson/nodeFight"
+  },
+  "bin": {
+    "ts-fe-cli": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thesoncriel/ts-fe-cli.git"
+  },
+  "keywords": [
+    "ts-fe-toolkit",
+    "frontend",
+    "typescript",
+    "code-generator",
+    "cli"
+  ],
+  "author": "Theson",
+  "license": "MIT",
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/thesoncriel/ts-fe-cli/issues"
+  },
+  "homepage": "https://github.com/thesoncriel/ts-fe-cli#readme",
+  "dependencies": {
+    "commander": "^9.4.0",
+    "handlebars": "^4.7.7",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vitejs/plugin-legacy": "^2.0.0",
+    "esbuild": "^0.14.51",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.4",
+    "vitest": "^0.20.2"
+  }
+}
