@@ -1,0 +1,9 @@
+import { createSelector, createDraftSafeSelector } from '@reduxjs/toolkit';
+import { RootState } from '@common/store';
+
+const sel{{fullNameAsPascalCase}} = (state: RootState) => state.{{featureName}}.{{subName}};
+
+export const sel{{fullNameAsPascalCase}}Loading = createSelector(
+  sel{{fullNameAsPascalCase}},
+  state => state.loading
+);

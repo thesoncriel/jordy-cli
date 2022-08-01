@@ -1,0 +1,28 @@
+/* eslint-disable no-alert */
+import { ComponentProps } from 'react';
+import { Story, Meta, ArgTypes } from '@storybook/react';
+import { {{fileName}} } from '../{{fileName}}';
+
+interface StoryProps extends ComponentProps<typeof {{fileName}}> {
+}
+
+type MyArgTypes = Partial<Record<keyof StoryProps, ArgTypes[string]>>;
+const argTypesSetting: MyArgTypes = {
+};
+
+export default {
+  title: '{{featureName}}/{{subName}}/{{fileName}}',
+  component: {{fileName}},
+  argTypes: argTypesSetting,
+  parameters: { actions: { argTypesRegex: '^on.*' } }
+} as Meta;
+
+const Template: Story<StoryProps> = ({ ...props }) => {
+  return (
+    <{{fileName}} {...props}></{{fileName}}>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+};

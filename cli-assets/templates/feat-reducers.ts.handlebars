@@ -1,0 +1,7 @@
+import { sharedReducer } from '@shared/reducers';
+import { {{featureName}}Reducer } from './{{featureName}}/reducers';
+
+export const featureReducers = {
+  shared: sharedReducer,
+  {{featureName}}: {{featureName}}Reducer,
+};

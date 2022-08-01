@@ -1,0 +1,123 @@
+{
+  "name": "ts-fe-toolkit default architecture config set",
+  "stores": {
+    "storeSub": {
+      "base": "src/features/{{featureName}}/stores/{{subName}}",
+      "files": [
+        {
+          "fileName": "{{fullName}}.effect.ts",
+          "template": "{{defTemplates}}store-sub-effect.ts.handlebars"
+        },
+        {
+          "fileName": "{{fullName}}.slice.ts",
+          "template": "{{defTemplates}}store-sub-slice.ts.handlebars"
+        },
+        {
+          "fileName": "{{fullName}}.selector.ts",
+          "template": "{{defTemplates}}store-sub-selector.ts.handlebars"
+        },
+        {
+          "fileName": "index.ts",
+          "template": "{{defTemplates}}store-sub-index.ts.handlebars"
+        }
+      ]
+    },
+    "storeRoot": {
+      "base": "src/features/{{featureName}}/stores",
+      "files": [
+        {
+          "fileName": "index.ts",
+          "template": "{{defTemplates}}store-index.ts.handlebars",
+          "appendLogic": "appendWithoutDuplicates"
+        }
+      ]
+    },
+    "featureRoot": {
+      "base": "src/features/{{featureName}}",
+      "files": [
+        {
+          "fileName": "reducers.ts",
+          "template": "{{defTemplates}}reducers.ts.handlebars",
+          "appendLogic": "appendReducers"
+        }
+      ]
+    },
+    "srcRoot": {
+      "base": "src",
+      "files": [
+        {
+          "fileName": "features/feat-reducers.ts",
+          "template": "{{defTemplates}}feat-reducers.ts.handlebars",
+          "appendLogic": "appendReducers"
+        }
+      ]
+    }
+  },
+  "components": {
+    "normal": {
+      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "files": [
+        {
+          "fileName": "{{fileName}}.tsx",
+          "template": "{{defTemplates}}component-normal.tsx.handlebars"
+        }
+      ]
+    },
+    "dialog": {
+      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "files": [
+        {
+          "fileName": "{{fileName}}.tsx",
+          "template": "{{defTemplates}}component-dialog.tsx.handlebars"
+        }
+      ]
+    },
+    "imperative": {
+      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "files": [
+        {
+          "fileName": "{{fileName}}.tsx",
+          "template": "{{defTemplates}}component-imperative.tsx.handlebars"
+        }
+      ]
+    },
+    "memo": {
+      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "files": [
+        {
+          "fileName": "{{fileName}}.tsx",
+          "template": "{{defTemplates}}component-memo.tsx.handlebars"
+        }
+      ]
+    }
+  },
+  "storybook": {
+    "normal": {
+      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "files": [
+        {
+          "fileName": "{{fileName}}.stories.tsx",
+          "template": "{{defTemplates}}storybook-normal.stories.tsx.handlebars"
+        }
+      ]
+    },
+    "dialog": {
+      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "files": [
+        {
+          "fileName": "{{fileName}}.stories.tsx",
+          "template": "{{defTemplates}}storybook-dialog.stories.tsx.handlebars"
+        }
+      ]
+    },
+    "imperative": {
+      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "files": [
+        {
+          "fileName": "{{fileName}}.stories.tsx",
+          "template": "{{defTemplates}}storybook-imperative.stories.tsx.handlebars"
+        }
+      ]
+    }
+  }
+}
