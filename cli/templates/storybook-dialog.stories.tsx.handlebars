@@ -1,0 +1,65 @@
+/* eslint-disable no-alert */
+import { ComponentProps, useRef, useEffect } from 'react';
+import { actions } from '@storybook/addon-actions';
+import { Story, Meta, ArgTypes } from '@storybook/react';
+import styled from 'styled-components';
+import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
+
+interface StoryProps extends ComponentProps<typeof {{fileName}}> {
+}
+
+type MyArgTypes = Partial<Record<keyof StoryProps, ArgTypes[string]>>;
+const argTypesSetting: MyArgTypes = {
+  defaultShow: {
+    control: 'boolean',
+  },
+};
+
+export default {
+  title: '{{featureName}}/{{subName}}/{{fileName}}',
+  component: {{fileName}},
+  argTypes: argTypesSetting,
+  parameters: { actions: { argTypesRegex: '^on.*' } }
+} as Meta;
+
+// 디자인 시스템으로 쓰이는 기본 버튼이 있다면 삭제 할 것.
+const Button = styled.button`
+  border: 1px solid #888;
+  border-radius: 3px;
+  background: linear-gradient(0deg, rgba(37,145,222,1) 0%, rgba(255,255,255,1) 90%);
+`;
+
+const modalEvent = actions('onTestModalFinish', 'onTestModalError');
+
+const Template: Story<StoryProps> = ({ defaultShow, ...props }) => {
+  const refModal = useRef<{{fileName}}Handle>(null);
+
+  const handleOpen = () => {
+    refModal.current
+      ?.open()
+      .then(modalEvent.onTestModalFinish)
+      .catch(modalEvent.onTestModalError);
+  };
+
+  useEffect(() => {
+    defaultShow && handleOpen();
+  }, [defaultShow]);
+
+  return (
+    <div>
+      <Button onClick={handleOpen}>열기</Button>
+      <{{fileName}} {...props} ref={refModal}></{{fileName}}>
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  defaultShow: true,
+};
+
+export const WithTrigger = Template.bind({});
+WithTrigger.args = {
+  ...Default.args,
+  defaultShow: false,
+};

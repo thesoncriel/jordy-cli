@@ -1,0 +1,35 @@
+export interface FeatureNameConfig {
+  fullNameAsCamelCase: string;
+  fullName: string;
+  featureName: string;
+  subName: string;
+}
+
+class BasicFeatureNameConfig implements FeatureNameConfig {
+  private _fullName: string;
+  private _fullNameAsCamelCase: string;
+
+  get fullName() {
+    return this._fullName;
+  }
+  get fullNameAsCamelCase() {
+    return this._fullNameAsCamelCase;
+  }
+
+  constructor(
+    public readonly featureName: string,
+    public readonly subName: string
+  ) {
+    const subNameAsPascalCase = subName
+      ? `${subName.charAt(0).toUpperCase()}${subName.slice(1)}`
+      : '';
+    this._fullName = `${this.featureName}${subNameAsPascalCase}`;
+    this._fullNameAsCamelCase = `${this._fullName
+      .charAt(0)
+      .toLowerCase()}${this._fullName.slice(1)}`;
+  }
+}
+
+export const fileFolderNameConfig = {
+  feature,
+};

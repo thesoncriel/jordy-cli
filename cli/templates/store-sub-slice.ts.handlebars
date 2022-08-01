@@ -1,0 +1,31 @@
+/* eslint-disable no-param-reassign */
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface {{fullNameAsPascalCase}}State {
+  loading: boolean;
+}
+
+export function getInit{{fullNameAsPascalCase}}State(loading = true) {
+  const result: {{fullNameAsPascalCase}}State = {
+    loading,
+  };
+  return result;
+}
+
+export const {{fullName}}Slice = createSlice({
+  name: '{{fullName}}',
+  initialState: getInit{{fullNameAsPascalCase}}State(),
+  reducers: {
+    reset(_, { payload }: PayloadAction<boolean | undefined>) {
+      return getInit{{fullNameAsPascalCase}}State(payload);
+    },
+    // actions here.. 
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(effSomeAction.pending, state => {
+        state.loading = true;
+      })
+    ;
+  }
+});
