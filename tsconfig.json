@@ -1,0 +1,24 @@
+{
+  "include": ["packages/**/*"],
+  "exclude": ["node_modules", "**/*.fixtures.tsx", "**/*.fixtures.ts"],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "declaration": false,
+    "removeComments": true,
+    "importHelpers": true,
+    "module": "esnext",
+    "target": "esnext",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "ts-fe-cli": [
+        "packages/index"
+      ]
+    }
+  }
+}
