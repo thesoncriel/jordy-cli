@@ -1,7 +1,0 @@
-import { CodeGeneratorConfigModel } from './types';
-
-export async function getConfigData() {
-  const config = await import('./config.json');
-
-  return config as CodeGeneratorConfigModel;
-}

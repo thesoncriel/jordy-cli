@@ -40,6 +40,26 @@
             "fileName": "reducers.ts",
             "template": "reducers.ts.handlebars",
             "appendLogic": "featureReducers"
+          },
+          {
+            "fileName": "manipulates/index.ts"
+          },
+          {
+            "fileName": "models/index.ts"
+          }
+        ],
+        "folders": [
+          {
+            "folderName": "components"
+          },
+          {
+            "folderName": "containers"
+          },
+          {
+            "folderName": "pages"
+          },
+          {
+            "folderName": "contexts"
           }
         ]
       },
