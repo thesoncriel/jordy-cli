@@ -4,6 +4,7 @@ import { TypeScriptFilePathParser } from './TypeScriptFilePathParser';
 import {
   appendLogicCurried,
   compileTemplate,
+  makeDirectory,
   readFile,
   writeFile,
 } from './utils';
@@ -18,6 +19,7 @@ export function createCodeFileWriterService(): CodeFileWriter {
     readFile,
     compileTemplate,
     writeFile,
-    appendLogicCurried(appendLogics)
+    appendLogicCurried(appendLogics),
+    makeDirectory
   );
 }

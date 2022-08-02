@@ -1,6 +1,6 @@
 {
   "name": "ts-fe-cli",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "CLI tool for front-end develop with ts-fe-toolkit",
   "main": "./build/index.js",
   "scripts": {
@@ -11,9 +11,7 @@
     "test:watch": "vitest watch",
     "prettier": "prettier './packages/**/*.ts'",
     "lint": "eslint 'packages/**'",
-    "run:feat": "node bin feat add theson",
-    "test:feat:theson": "npm run build && node bin feat add theson",
-    "test:feat:nodeFight": "npm run build && node bin feat add theson/nodeFight"
+    "test:feat": "npm run build && node bin feat add lookpin/theson"
   },
   "bin": {
     "ts-fe-cli": "./bin/index.js"
