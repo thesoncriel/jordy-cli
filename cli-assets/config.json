@@ -39,6 +39,26 @@
           "fileName": "reducers.ts",
           "template": "{{defTemplates}}reducers.ts.handlebars",
           "appendLogic": "appendReducers"
+        },
+        {
+          "fileName": "manipulates/index.ts"
+        },
+        {
+          "fileName": "models/index.ts"
+        }
+      ],
+      "folders": [
+        {
+          "folderName": "components"
+        },
+        {
+          "folderName": "containers"
+        },
+        {
+          "folderName": "pages"
+        },
+        {
+          "folderName": "contexts"
         }
       ]
     },
