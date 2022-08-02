@@ -50,16 +50,23 @@ export interface CodeGeneratorModuleConfigDto {
   >;
 }
 
+export interface CodeGeneratorFileConfigDto {
+  fileName: string;
+  template?: string;
+  appendLogic?: string;
+}
+
+export interface CodeGeneratorFolderConfigDto {
+  folderName: string;
+}
+
 export interface CodeGeneratorPathConfigDto {
   base: string;
   files: CodeGeneratorFileConfigDto[];
+  folders?: CodeGeneratorFolderConfigDto[];
 }
 
-export interface CodeGeneratorFileConfigDto {
-  fileName: string;
-  template: string;
-  appendLogic?: string;
-}
+
 
 export interface CodeGeneratorCLICommand {
   type: 'feat' | 'sub' | 'ui' | 'sb';
@@ -95,4 +102,8 @@ export interface TextFileAppendFn<T = FeatureFileInfoDto> {
 
 export interface AppendLogicDictionaryModel<T = FeatureFileInfoDto> {
   [name: string]: (prevCode: string, nextSourceCode: string, data: T) => string;
+}
+
+export interface DirectoryMakerFn {
+  (targetPath: string): Promise<boolean>;
 }

@@ -59,9 +59,32 @@ function getFileInfo() {
   return fileInfo;
 }
 
+function getConfigForFolderTest() {
+  const config: CodeGeneratorPathConfigDto = {
+    base: 'someSrcPath/{{featureName}}',
+    files: [],
+    folders: [
+      {
+        folderName: 'components',
+      },
+      {
+        folderName: 'containers',
+      },
+      {
+        folderName: 'pages',
+      },
+      {
+        folderName: 'some/{{subName}}/elements',
+      },
+    ],
+  };
+  return config;
+}
+
 export const codeFileWriterFixtures = {
   getConfig,
   getConfigForOverwriteTest,
   getConfigForAppendTest,
   getFileInfo,
+  getConfigForFolderTest,
 };

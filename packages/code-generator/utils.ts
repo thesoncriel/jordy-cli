@@ -53,6 +53,12 @@ export async function compileTemplate(
   return source;
 }
 
+export async function makeDirectory(targetPath: string) {
+  await fs.mkdir(targetPath, { recursive: true });
+
+  return true;
+}
+
 export async function writeFile(
   targetPath: string,
   source: string,

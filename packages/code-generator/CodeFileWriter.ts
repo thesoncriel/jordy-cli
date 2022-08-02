@@ -1,6 +1,8 @@
 import {
   CodeGeneratorFileConfigDto,
+  CodeGeneratorFolderConfigDto,
   CodeGeneratorPathConfigDto,
+  DirectoryMakerFn,
   FeatureFileInfoDto,
   TemplateCompiler,
   TextFileAppendFn,
@@ -20,12 +22,35 @@ export class CodeFileWriterService implements CodeFileWriter {
     private read: TextFileReaderFn,
     private compile: TemplateCompiler,
     private write: TextFileWriterFn,
-    private append: TextFileAppendFn
+    private append: TextFileAppendFn,
+    private mkdir: DirectoryMakerFn
   ) {}
+
+  async makeDirectory(
+    basePath: string,
+    folderInfo: CodeGeneratorFolderConfigDto,
+    fileInfo: FeatureFileInfoDto
+  ) {
+    const destPath = await this.compile(
+      `${basePath}/${folderInfo.folderName}`,
+      fileInfo
+    );
+
+    await this.mkdir(destPath);
+
+    return true;
+  }
+
+  async readFile(path: string | undefined) {
+    if (!path) {
+      return '';
+    }
+    return this.read(path);
+  }
 
   async readTemplates(pathInfoList: CodeGeneratorFileConfigDto[]) {
     return await Promise.all(
-      pathInfoList.map((item) => this.read(item.template))
+      pathInfoList.map((item) => this.readFile(item.template))
     );
   }
 
@@ -39,7 +64,7 @@ export class CodeFileWriterService implements CodeFileWriter {
       `${basePath}/${featInfo.fileName}`,
       fileInfo
     );
-    const sourceCode = await this.compile(template, fileInfo);
+    const sourceCode = !template ? '' : await this.compile(template, fileInfo);
     const { appendLogic } = featInfo;
 
     if (appendLogic) {
@@ -64,14 +89,23 @@ export class CodeFileWriterService implements CodeFileWriter {
     config: CodeGeneratorPathConfigDto,
     fileInfo: FeatureFileInfoDto
   ) {
-    const templates = await this.readTemplates(config.files);
+    const { base, folders, files } = config;
+    const templates = await this.readTemplates(files);
 
-    const result = await Promise.all(
-      config.files.map((info, index) =>
-        this.make(config.base, info, templates[index], fileInfo)
+    const fileResult = await Promise.all(
+      files.map((info, index) =>
+        this.make(base, info, templates[index], fileInfo)
       )
     );
 
-    return result.length;
+    if (!folders) {
+      return fileResult.length;
+    }
+
+    const folderResult = await Promise.all(
+      folders.map((info) => this.makeDirectory(base, info, fileInfo))
+    );
+
+    return fileResult.length + folderResult.length;
   }
 }

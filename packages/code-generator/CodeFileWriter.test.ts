@@ -13,6 +13,7 @@ const {
   getConfigForOverwriteTest,
   getConfigForAppendTest,
   getFileInfo,
+  getConfigForFolderTest,
 } = codeFileWriterFixtures;
 
 function createMockFn() {
@@ -47,19 +48,28 @@ function createMockFn() {
     return true;
   }) as TextFileAppendFn);
 
+  const mkdir = vi.fn();
+
   return {
     compile,
     read,
     write,
     appendLogic,
     append,
+    mkdir,
   };
 }
 
 describe('CodeFileWriterService', () => {
   describe('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
-    const { read, compile, write, append, appendLogic } = createMockFn();
-    const service = new CodeFileWriterService(read, compile, write, append);
+    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const service = new CodeFileWriterService(
+      read,
+      compile,
+      write,
+      append,
+      mkdir
+    );
     const config = getConfig();
     const fileInfo = getFileInfo();
     const result = await service.makeAll(config, fileInfo);
@@ -74,6 +84,7 @@ describe('CodeFileWriterService', () => {
       write.mockClear();
       append.mockClear();
       appendLogic.mockClear();
+      mkdir.mockClear();
     });
 
     it('만들어진 결과 개수는 설정 정보 개수와 일치한다.', () => {
@@ -100,8 +111,14 @@ describe('CodeFileWriterService', () => {
   });
 
   describe('만들려는 소스파일이 이미 존재할 때', async () => {
-    const { read, compile, write, append, appendLogic } = createMockFn();
-    const service = new CodeFileWriterService(read, compile, write, append);
+    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const service = new CodeFileWriterService(
+      read,
+      compile,
+      write,
+      append,
+      mkdir
+    );
     const fileInfo = getFileInfo();
 
     afterEach(() => {
@@ -110,6 +127,7 @@ describe('CodeFileWriterService', () => {
       write.mockClear();
       append.mockClear();
       appendLogic.mockClear();
+      mkdir.mockClear();
     });
 
     it('append logic 이 설정되어있지 않다면 덮어 씌운다.', async () => {
@@ -147,6 +165,51 @@ describe('CodeFileWriterService', () => {
         false
       );
       expect(append).toBeCalled();
+    });
+  });
+
+  describe('폴더 생성', () => {
+    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const service = new CodeFileWriterService(
+      read,
+      compile,
+      write,
+      append,
+      mkdir
+    );
+    const fileInfo = getFileInfo();
+
+    afterEach(() => {
+      compile.mockClear();
+      read.mockClear();
+      write.mockClear();
+      append.mockClear();
+      appendLogic.mockClear();
+      mkdir.mockClear();
+    });
+
+    it('설정된 folders 내용을 기반으로 폴더 만들기를 수행한다.', async () => {
+      const config = getConfigForFolderTest();
+      const result = await service.makeAll(config, fileInfo);
+
+      expect(result).toBe(4);
+    });
+
+    it('폴더 생성 시 지정된 base 경로 값을 활용한다.', async () => {
+      const config = getConfigForFolderTest();
+
+      await service.makeAll(config, fileInfo);
+
+      expect(mkdir).toBeCalledWith(
+        `someSrcPath/${fileInfo.featureName}/components`
+      );
+      expect(mkdir).toBeCalledWith(
+        `someSrcPath/${fileInfo.featureName}/containers`
+      );
+      expect(mkdir).toBeCalledWith(`someSrcPath/${fileInfo.featureName}/pages`);
+      expect(mkdir).toBeCalledWith(
+        `someSrcPath/${fileInfo.featureName}/some/${fileInfo.subName}/elements`
+      );
     });
   });
 });
