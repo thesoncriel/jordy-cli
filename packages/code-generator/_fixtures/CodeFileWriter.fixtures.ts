@@ -45,6 +45,18 @@ function getConfigForAppendTest(hasUnknownAppendLogic = false) {
   return config;
 }
 
+function getConfigForNoTemplateTest() {
+  const config: CodeGeneratorPathConfigDto = {
+    base: 'someSrcPath',
+    files: [
+      {
+        fileName: 'any/already/exists/{{fullName}}.ts',
+      },
+    ],
+  };
+  return config;
+}
+
 function getFileInfo() {
   const fileInfo: FeatureFileInfoDto = {
     fileName: 'LookpinInput',
@@ -87,4 +99,5 @@ export const codeFileWriterFixtures = {
   getConfigForAppendTest,
   getFileInfo,
   getConfigForFolderTest,
+  getConfigForNoTemplateTest,
 };

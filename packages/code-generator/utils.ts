@@ -66,8 +66,13 @@ export async function writeFile(
 ) {
   const isExists = await existsFile(targetPath);
 
-  if (isExists && !forceOverwrite) {
-    throw new Error(`"${targetPath}" file already exists`);
+  if (isExists) {
+    if (!source) {
+      return true;
+    }
+    if (!forceOverwrite) {
+      throw new Error(`"${targetPath}" file already exists`);
+    }
   }
 
   await fs.mkdir(dirname(targetPath), { recursive: true });

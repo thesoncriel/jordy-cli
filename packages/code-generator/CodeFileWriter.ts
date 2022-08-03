@@ -64,7 +64,10 @@ export class CodeFileWriterService implements CodeFileWriter {
       `${basePath}/${featInfo.fileName}`,
       fileInfo
     );
-    const sourceCode = !template ? '' : await this.compile(template, fileInfo);
+    const hasTemplate = Boolean(template);
+    const sourceCode = hasTemplate
+      ? await this.compile(template, fileInfo)
+      : '';
     const { appendLogic } = featInfo;
 
     if (appendLogic) {
@@ -82,7 +85,7 @@ export class CodeFileWriterService implements CodeFileWriter {
       }
     }
 
-    await this.write(destPath, sourceCode, true);
+    await this.write(destPath, sourceCode, hasTemplate);
   }
 
   async makeAll(
