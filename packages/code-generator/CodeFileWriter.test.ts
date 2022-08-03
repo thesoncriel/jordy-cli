@@ -12,6 +12,7 @@ const {
   getConfig,
   getConfigForOverwriteTest,
   getConfigForAppendTest,
+  getConfigForNoTemplateTest,
   getFileInfo,
   getConfigForFolderTest,
 } = codeFileWriterFixtures;
@@ -31,8 +32,8 @@ function createMockFn() {
     return result;
   }) as TextFileReaderFn);
 
-  const write = vi.fn((async (path, _, forceOverwrite) => {
-    if (path.includes('already/exists') && !forceOverwrite) {
+  const write = vi.fn((async (path, data, forceOverwrite) => {
+    if (path.includes('already/exists') && data && !forceOverwrite) {
       return Promise.reject(new Error('already exists'));
     }
     return true;
@@ -165,6 +166,19 @@ describe('CodeFileWriterService', () => {
         false
       );
       expect(append).toBeCalled();
+    });
+    it('템플릿이 없으면 덮어씌우기를 하지 않는다.', async () => {
+      const config = getConfigForNoTemplateTest();
+
+      const result = await service.makeAll(config, fileInfo);
+
+      expect(result).toBe(1);
+      expect(write).toBeCalledWith(
+        `${config.base}/any/already/exists/${fileInfo.fullName}.ts`,
+        '',
+        false
+      );
+      expect(append).not.toBeCalled();
     });
   });
 
