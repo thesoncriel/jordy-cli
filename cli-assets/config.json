@@ -2,42 +2,46 @@
   "name": "ts-fe-toolkit default architecture config set",
   "stores": {
     "storeSub": {
-      "base": "src/features/{{featureName}}/stores/{{subName}}",
+      "base": "src/{{withFeature featureName}}/stores/{{subName}}",
+      "excludes": ["core", "common"],
       "files": [
         {
           "fileName": "{{fullName}}.effect.ts",
-          "template": "{{defTemplates}}store-sub-effect.ts.handlebars"
+          "template": "__defTemplates/store-sub-effect.ts.handlebars"
         },
         {
           "fileName": "{{fullName}}.slice.ts",
-          "template": "{{defTemplates}}store-sub-slice.ts.handlebars"
+          "template": "__defTemplates/store-sub-slice.ts.handlebars"
         },
         {
           "fileName": "{{fullName}}.selector.ts",
-          "template": "{{defTemplates}}store-sub-selector.ts.handlebars"
+          "template": "__defTemplates/store-sub-selector.ts.handlebars"
         },
         {
           "fileName": "index.ts",
-          "template": "{{defTemplates}}store-sub-index.ts.handlebars"
+          "template": "__defTemplates/store-sub-index.ts.handlebars"
         }
       ]
     },
     "storeRoot": {
-      "base": "src/features/{{featureName}}/stores",
+      "base": "src/{{withFeature featureName}}/stores",
+      "excludes": ["core", "common"],
       "files": [
         {
           "fileName": "index.ts",
-          "template": "{{defTemplates}}store-index.ts.handlebars",
+          "template": "__defTemplates/store-index.ts.handlebars",
           "appendLogic": "appendWithoutDuplicates"
         }
       ]
     },
     "featureRoot": {
-      "base": "src/features/{{featureName}}",
+      "base": "src/{{withFeature featureName}}",
+      "excludes": ["core"],
       "files": [
         {
+          "excludes": ["common"],
           "fileName": "reducers.ts",
-          "template": "{{defTemplates}}reducers.ts.handlebars",
+          "template": "__defTemplates/reducers.ts.handlebars",
           "appendLogic": "appendReducers"
         },
         {
@@ -55,19 +59,22 @@
           "folderName": "containers"
         },
         {
+          "excludes": ["shared"],
           "folderName": "pages"
         },
         {
+          "excludes": ["common", "shared"],
           "folderName": "contexts"
         }
       ]
     },
     "srcRoot": {
       "base": "src",
+      "excludes": ["core", "common", "shared"],
       "files": [
         {
           "fileName": "features/feat-reducers.ts",
-          "template": "{{defTemplates}}feat-reducers.ts.handlebars",
+          "template": "__defTemplates/feat-reducers.ts.handlebars",
           "appendLogic": "appendReducers"
         }
       ]
@@ -75,67 +82,74 @@
   },
   "components": {
     "normal": {
-      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.tsx",
-          "template": "{{defTemplates}}component-normal.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-normal.tsx.handlebars"
         }
       ]
     },
     "dialog": {
-      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.tsx",
-          "template": "{{defTemplates}}component-dialog.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-dialog.tsx.handlebars"
         }
       ]
     },
     "imperative": {
-      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.tsx",
-          "template": "{{defTemplates}}component-imperative.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-imperative.tsx.handlebars"
         }
       ]
     },
     "memo": {
-      "base": "src/features/{{featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.tsx",
-          "template": "{{defTemplates}}component-memo.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-memo.tsx.handlebars"
         }
       ]
     }
   },
   "storybook": {
     "normal": {
-      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.stories.tsx",
-          "template": "{{defTemplates}}storybook-normal.stories.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
+          "template": "__defTemplates/storybook-normal.stories.tsx.handlebars"
         }
       ]
     },
     "dialog": {
-      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.stories.tsx",
-          "template": "{{defTemplates}}storybook-dialog.stories.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
+          "template": "__defTemplates/storybook-dialog.stories.tsx.handlebars"
         }
       ]
     },
     "imperative": {
-      "base": "src/features/{{featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "excludes": ["core"],
       "files": [
         {
-          "fileName": "{{fileName}}.stories.tsx",
-          "template": "{{defTemplates}}storybook-imperative.stories.tsx.handlebars"
+          "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
+          "template": "__defTemplates/storybook-imperative.stories.tsx.handlebars"
         }
       ]
     }

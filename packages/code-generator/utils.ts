@@ -2,7 +2,11 @@ import fs from 'node:fs/promises';
 import { dirname } from 'path';
 import { AppendLogicDictionaryModel, FeatureFileInfoDto } from './types';
 import Handlebars from 'handlebars';
-import { CLI_ASSETS_NAME } from './constants';
+import { CLI_ASSETS_NAME, COMMON_FEATURE_NAMES } from './constants';
+
+Handlebars.registerHelper('withFeature', function (value) {
+  return `${COMMON_FEATURE_NAMES.includes(value) ? '' : 'features/'}${value}`;
+});
 
 export function toCapitalize(value: string) {
   if (!value || typeof value !== 'string' || value.length === 0) {
@@ -20,6 +24,17 @@ export function isString(val: unknown): val is string {
   return typeof val === 'string' || val instanceof String;
 }
 
+export function filterByExcludesCurried(featureName: string) {
+  return function filterByExcludes<T extends { excludes?: string[] }>({
+    excludes,
+  }: T) {
+    if (excludes) {
+      return excludes.includes(featureName) === false;
+    }
+    return true;
+  };
+}
+
 export async function existsFile(filepath: string) {
   try {
     await fs.access(filepath);
@@ -33,9 +48,9 @@ export async function existsFile(filepath: string) {
 export async function readFile(filepath: string) {
   let path = filepath;
 
-  if (filepath.startsWith('{{defTemplates}}')) {
+  if (filepath.startsWith('__defTemplates/')) {
     path = filepath.replace(
-      '{{defTemplates}}',
+      '__defTemplates/',
       `${__dirname}/../${CLI_ASSETS_NAME}/templates/`
     );
   }

@@ -6,62 +6,74 @@ describe('TypeScriptFilePathParser', () => {
   const relativePath =
     './src/features/summer/stores/rainCloud/summerRainCloud.effect.ts';
 
-  describe('extractFeatureName', () => {
-    function extractFeatureName(value: string): string {
-      return new TypeScriptFilePathParser().extractFeatureName(
+  describe('findFeatureNameFrom', () => {
+    function findFeatureNameFrom(value: string): string {
+      return new TypeScriptFilePathParser().findFeatureNameFrom(
         value.split('/')
       );
     }
 
     it('분할된 경로에서 feature name 을 추출한다.', () => {
-      const result = extractFeatureName(normalPath);
+      const result = findFeatureNameFrom(normalPath);
 
       expect(result).toBe('sonic');
     });
 
     it('상대 경로를 주어도 정상적으로 내용 추출 가능하다.', () => {
-      const result = extractFeatureName(relativePath);
+      const result = findFeatureNameFrom(relativePath);
 
       expect(result).toBe('summer');
     });
 
+    it('공용 모듈(common, core, shared) 경로일 경우 그 내용을 추출 할 수 있다.', () => {
+      const result1 = findFeatureNameFrom('./src/common/components/basic');
+      const result2 = findFeatureNameFrom('./src/shared/stores/products');
+      const result3 = findFeatureNameFrom(
+        '/home/lookpin/working/prj/src/core/entities/member'
+      );
+
+      expect(result1).toBe('common');
+      expect(result2).toBe('shared');
+      expect(result3).toBe('core');
+    });
+
     it('기능 모듈 폴더를 찾을 수 없으면 에러를 일으킨다.', () => {
       expect(() =>
-        extractFeatureName('/home/blah/src/feat/components/Lookpin.tsx')
+        findFeatureNameFrom('/home/blah/src/feat/components/Lookpin.tsx')
       ).toThrowError();
     });
 
     it('기능 모듈 폴더를 찾았으나 그 이후 경로에 아무것도 없으면 에러를 일으킨다.', () => {
       expect(() =>
-        extractFeatureName('/home/blah/src/features')
+        findFeatureNameFrom('/home/blah/src/features')
       ).toThrowError();
       expect(() =>
-        extractFeatureName('/home/blah/src/features/')
+        findFeatureNameFrom('/home/blah/src/features/')
       ).toThrowError();
-      expect(() => extractFeatureName('./src/features/')).toThrowError();
+      expect(() => findFeatureNameFrom('./src/features/')).toThrowError();
     });
   });
 
-  describe('extractSubName', () => {
-    function extractSubName(value: string): string {
-      return new TypeScriptFilePathParser().extractSubName(value.split('/'));
+  describe('findSubNameFrom', () => {
+    function findSubNameFrom(value: string): string {
+      return new TypeScriptFilePathParser().findSubNameFrom(value.split('/'));
     }
 
     it('분할된 경로에서 sub name 을 추출한다.', () => {
-      const result = extractSubName(normalPath);
+      const result = findSubNameFrom(normalPath);
 
       expect(result).toBe('boomSeries');
     });
 
     it('상대 경로를 주어도 정상적으로 추출 가능하다.', () => {
-      const result = extractSubName(relativePath);
+      const result = findSubNameFrom(relativePath);
 
       expect(result).toBe('rainCloud');
     });
 
     it('sub name 을 추출할 수 없으면 에러를 일으킨다.', () => {
       expect(() =>
-        extractSubName('/root/work/src/features/stores/nya.wtf.ts')
+        findSubNameFrom('/root/work/src/features/stores/nya.wtf.ts')
       ).toThrowError();
     });
   });
@@ -151,6 +163,97 @@ describe('TypeScriptFilePathParser', () => {
         fileName: '',
         fileExt: '',
         fileNameAsPascalCase: '',
+      });
+    });
+  });
+
+  describe('parseForComponent', () => {
+    const parser = new TypeScriptFilePathParser();
+
+    it('모듈과 하위 모듈 명칭, 그리고 컴포넌트 명칭으로 분석된 결과를 만들수 있다.', () => {
+      const result = parser.parseForComponent('lookpin/search', 'SearchTable');
+
+      expect(result).toEqual({
+        fullName: 'lookpinSearch',
+        fullNameAsPascalCase: 'LookpinSearch',
+        featureName: 'lookpin',
+        featureNameAsPascalCase: 'Lookpin',
+        subName: 'search',
+        fileName: 'SearchTable',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'SearchTable',
+      });
+    });
+
+    it('실제 폴더 경로와 컴포넌트 명칭으로 의도대로 분석된다.', () => {
+      const result = parser.parseForComponent(
+        '/home/theson/work/myProject/src/features/lookpin/components/search',
+        'SearchTable'
+      );
+
+      expect(result).toEqual({
+        fullName: 'lookpinSearch',
+        fullNameAsPascalCase: 'LookpinSearch',
+        featureName: 'lookpin',
+        featureNameAsPascalCase: 'Lookpin',
+        subName: 'search',
+        fileName: 'SearchTable',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'SearchTable',
+      });
+    });
+
+    it('상대 경로를 주어도 의도대로 분석된다.', () => {
+      const result = parser.parseForComponent(
+        './src/features/lookpin/components/search',
+        'SearchTable'
+      );
+
+      expect(result).toEqual({
+        fullName: 'lookpinSearch',
+        fullNameAsPascalCase: 'LookpinSearch',
+        featureName: 'lookpin',
+        featureNameAsPascalCase: 'Lookpin',
+        subName: 'search',
+        fileName: 'SearchTable',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'SearchTable',
+      });
+    });
+
+    it('기능 모듈 경로를 주어도 의도대로 분석된다.', () => {
+      const result = parser.parseForComponent(
+        '/home/mall/my/project/src/features/lookpin',
+        'OtherViewPanel'
+      );
+
+      expect(result).toEqual({
+        fullName: 'lookpinBasic',
+        fullNameAsPascalCase: 'LookpinBasic',
+        featureName: 'lookpin',
+        featureNameAsPascalCase: 'Lookpin',
+        subName: 'basic',
+        fileName: 'OtherViewPanel',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'OtherViewPanel',
+      });
+    });
+
+    it('기능 모듈 경로를 상대 경로로 주어도 의도대로 분석된다.', () => {
+      const result = parser.parseForComponent(
+        './src/features/lookpin',
+        'OtherViewPanel'
+      );
+
+      expect(result).toEqual({
+        fullName: 'lookpinBasic',
+        fullNameAsPascalCase: 'LookpinBasic',
+        featureName: 'lookpin',
+        featureNameAsPascalCase: 'Lookpin',
+        subName: 'basic',
+        fileName: 'OtherViewPanel',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'OtherViewPanel',
       });
     });
   });

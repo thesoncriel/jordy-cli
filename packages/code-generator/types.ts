@@ -1,3 +1,15 @@
+export type CodeGeneratorComponentsConfigKeyType =
+  | 'normal'
+  | 'dialog'
+  | 'imperative'
+  | 'memo';
+
+export type CodeGeneratorStoresConfigKeyType =
+  | 'storeSub'
+  | 'storeRoot'
+  | 'featureRoot'
+  | 'srcRoot';
+
 export interface FeatureNameInfoDto {
   fullName: string;
   fullNameAsPascalCase: string;
@@ -19,23 +31,9 @@ export interface FeatureFileInfoDto
 export interface FilePathParser {
   parse(path: string): FeatureFileInfoDto;
   parse(featureName: string, subName: string): FeatureFileInfoDto;
+  parseForComponent(path: string, componentName: string): FeatureFileInfoDto;
+  extractFeatureName(path: string): string;
 }
-
-export interface CodeGeneratorConfigModel {
-  module: CodeGeneratorModuleConfigDto;
-}
-
-export type CodeGeneratorComponentsConfigKeyType =
-  | 'normal'
-  | 'dialog'
-  | 'imperative'
-  | 'memo';
-
-export type CodeGeneratorStoresConfigKeyType =
-  | 'storeSub'
-  | 'storeRoot'
-  | 'featureRoot'
-  | 'srcRoot';
 
 export interface CodeGeneratorModuleConfigDto {
   name: string;
@@ -52,21 +50,22 @@ export interface CodeGeneratorModuleConfigDto {
 
 export interface CodeGeneratorFileConfigDto {
   fileName: string;
+  excludes?: string[];
   template?: string;
   appendLogic?: string;
 }
 
 export interface CodeGeneratorFolderConfigDto {
+  excludes?: string[];
   folderName: string;
 }
 
 export interface CodeGeneratorPathConfigDto {
   base: string;
   files: CodeGeneratorFileConfigDto[];
+  excludes?: string[];
   folders?: CodeGeneratorFolderConfigDto[];
 }
-
-
 
 export interface CodeGeneratorCLICommand {
   type: 'feat' | 'sub' | 'ui' | 'sb';

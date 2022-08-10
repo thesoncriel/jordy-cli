@@ -1,3 +1,4 @@
+import { COMMON_FEATURE_NAMES } from './constants';
 import { FeatureFileInfo } from './FeatureFileInfo';
 import { FeatureNameInfo } from './FeatureNameInfo';
 import { FeatureFileInfoDto, FilePathParser } from './types';
@@ -5,19 +6,14 @@ import { isString } from './utils';
 
 export class TypeScriptFilePathParser implements FilePathParser {
   static DEFAULT_SUB_NAME = 'basic';
-  private subLayerDic = {} as Record<string, boolean>;
+
+  private commonFeatures: readonly string[] = COMMON_FEATURE_NAMES;
 
   constructor(
     private featuresFolder = 'features',
-    private subLayers = ['components', 'stores'],
+    private subLayers = ['components', 'containers', 'stores'],
     private extList = ['ts', 'tsx']
-  ) {
-    this.subLayerDic = subLayers.reduce((acc, sub) => {
-      acc[sub] = true;
-
-      return acc;
-    }, this.subLayerDic);
-  }
+  ) {}
 
   parseByNames(featureName: string, subName: string): FeatureFileInfoDto {
     const featureNameInfo = new FeatureNameInfo(
@@ -32,7 +28,15 @@ export class TypeScriptFilePathParser implements FilePathParser {
     if (isString(arg1) || arguments.length > 1) {
       return this.parseByNames(arg0, arg1 || '');
     }
-    const path = arg0;
+    const { featureNameInfo, isFile, endPoint } = this.parsePath(arg0);
+
+    return new FeatureFileInfo(
+      featureNameInfo,
+      isFile ? endPoint : ''
+    ).toPlainObject();
+  }
+
+  parsePath(path: string) {
     const splittedPath = path.split(/\/|\\/);
 
     if (splittedPath.length === 1) {
@@ -41,21 +45,35 @@ export class TypeScriptFilePathParser implements FilePathParser {
 
     const endPoint = splittedPath[splittedPath.length - 1];
     const isFile = this.extList.some((ext) => endPoint.endsWith(ext));
-    const featureName = this.extractFeatureName(splittedPath);
-    const subName = this.extractSubName(splittedPath);
-    const featureNameInfo = new FeatureNameInfo(featureName, subName);
+    const featureName = this.findFeatureNameFrom(splittedPath);
+    const subName = this.findSubNameFrom(splittedPath);
 
-    return new FeatureFileInfo(
-      featureNameInfo,
-      isFile ? endPoint : ''
-    ).toPlainObject();
+    return {
+      featureNameInfo: new FeatureNameInfo(featureName, subName),
+      endPoint,
+      isFile,
+    };
   }
 
-  extractFeatureName(splittedPath: string[]) {
+  findCommonFeatureNameFrom(splittedPath: string[]) {
+    const index = splittedPath.findIndex((value) => {
+      return (this.commonFeatures as string[]).includes(value);
+    });
+
+    if (index < 1 || splittedPath[index - 1] !== 'src') {
+      throw new Error(
+        `extract fail - cannot found : "${this.featuresFolder}" or common features.`
+      );
+    }
+
+    return splittedPath[index];
+  }
+
+  findFeatureNameFrom(splittedPath: string[]) {
     const index = splittedPath.indexOf(this.featuresFolder) + 1;
 
     if (index <= 0) {
-      throw new Error(`extract fail - cannot found : "${this.featuresFolder}"`);
+      return this.findCommonFeatureNameFrom(splittedPath);
     }
 
     if (splittedPath.length <= index) {
@@ -69,7 +87,11 @@ export class TypeScriptFilePathParser implements FilePathParser {
     return splittedPath[index];
   }
 
-  extractSubName(splittedPath: string[]) {
+  extractFeatureName(path: string) {
+    return this.findFeatureNameFrom(path.split(/\/|\\/));
+  }
+
+  findSubNameFrom(splittedPath: string[]) {
     const values = this.subLayers.reduce((arr, sub) => {
       const index = splittedPath.indexOf(sub) + 1;
 
@@ -89,5 +111,35 @@ export class TypeScriptFilePathParser implements FilePathParser {
     }
 
     return values[0];
+  }
+
+  tryFindSubNameFrom(splitPath: string[]) {
+    try {
+      return this.findSubNameFrom(splitPath);
+    } catch (error) {
+      return TypeScriptFilePathParser.DEFAULT_SUB_NAME;
+    }
+  }
+
+  parseForComponent(path: string, componentName: string) {
+    const splitPath = path.split(/\/|\\/);
+    let featureNameInfo;
+
+    if (splitPath.length <= 2) {
+      featureNameInfo = new FeatureNameInfo(
+        splitPath[0],
+        splitPath[1] || TypeScriptFilePathParser.DEFAULT_SUB_NAME
+      );
+    } else {
+      const featureName = this.findFeatureNameFrom(splitPath);
+      const subName = this.tryFindSubNameFrom(splitPath);
+
+      featureNameInfo = new FeatureNameInfo(featureName, subName);
+    }
+
+    return new FeatureFileInfo(
+      featureNameInfo,
+      `${componentName}.tsx`
+    ).toPlainObject();
   }
 }

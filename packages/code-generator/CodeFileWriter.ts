@@ -9,6 +9,7 @@ import {
   TextFileReaderFn,
   TextFileWriterFn,
 } from './types';
+import { filterByExcludesCurried } from './utils';
 
 export interface CodeFileWriter {
   makeAll(
@@ -92,13 +93,19 @@ export class CodeFileWriterService implements CodeFileWriter {
     config: CodeGeneratorPathConfigDto,
     fileInfo: FeatureFileInfoDto
   ) {
-    const { base, folders, files } = config;
+    const { base, folders, files, excludes } = config;
+
+    if (excludes && excludes.includes(fileInfo.featureName)) {
+      return 0;
+    }
+
     const templates = await this.readTemplates(files);
+    const filterFn = filterByExcludesCurried(fileInfo.featureName);
 
     const fileResult = await Promise.all(
-      files.map((info, index) =>
-        this.make(base, info, templates[index], fileInfo)
-      )
+      files
+        .filter(filterFn)
+        .map((info, index) => this.make(base, info, templates[index], fileInfo))
     );
 
     if (!folders) {
@@ -106,7 +113,9 @@ export class CodeFileWriterService implements CodeFileWriter {
     }
 
     const folderResult = await Promise.all(
-      folders.map((info) => this.makeDirectory(base, info, fileInfo))
+      folders
+        .filter(filterFn)
+        .map((info) => this.makeDirectory(base, info, fileInfo))
     );
 
     return fileResult.length + folderResult.length;

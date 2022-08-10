@@ -1,8 +1,13 @@
 import { CodeGeneratorPathConfigDto, FeatureFileInfoDto } from '../types';
+import { toCapitalize } from '../utils';
 
-function getConfig() {
+function getConfig(
+  parentExcludes: string[] = [],
+  childExcludes: string[] = []
+) {
   const config: CodeGeneratorPathConfigDto = {
-    base: 'src/feat/{{featureName}}/{{subName}}',
+    base: 'src/{{withFeature featureName}}/{{subName}}',
+    excludes: parentExcludes,
     files: [
       {
         fileName: '{{fileName}}Awesome.tsx',
@@ -10,6 +15,7 @@ function getConfig() {
         appendLogic: 'whatToDo',
       },
       {
+        excludes: childExcludes,
         fileName: '{{fileName}}.tsx',
         template: 'test2.tsx.handlebars',
       },
@@ -71,6 +77,27 @@ function getFileInfo() {
   return fileInfo;
 }
 
+function getSharedModuleInfo(
+  featureName = 'shared',
+  subName = 'memberInfo',
+  fileName = 'SortableList.tsx'
+) {
+  const featureNameAsPascalCase = toCapitalize(featureName);
+  const splittedFileName = fileName.split('.');
+
+  const fileInfo: FeatureFileInfoDto = {
+    fileName: splittedFileName[0],
+    fileExt: splittedFileName[1],
+    fileNameAsPascalCase: splittedFileName[0],
+    fullName: `${featureName}${toCapitalize(subName)}`,
+    fullNameAsPascalCase: `${featureNameAsPascalCase}${toCapitalize(subName)}`,
+    featureName,
+    featureNameAsPascalCase,
+    subName,
+  };
+  return fileInfo;
+}
+
 function getConfigForFolderTest() {
   const config: CodeGeneratorPathConfigDto = {
     base: 'someSrcPath/{{featureName}}',
@@ -98,6 +125,7 @@ export const codeFileWriterFixtures = {
   getConfigForOverwriteTest,
   getConfigForAppendTest,
   getFileInfo,
+  getSharedModuleInfo,
   getConfigForFolderTest,
   getConfigForNoTemplateTest,
 };

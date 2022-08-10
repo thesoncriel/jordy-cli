@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import { CodeFileWriterService } from './CodeFileWriter';
 import {
   TemplateCompiler,
@@ -6,6 +5,7 @@ import {
   TextFileReaderFn,
   TextFileWriterFn,
 } from './types';
+import { compileTemplate } from './utils';
 import { codeFileWriterFixtures } from './_fixtures/CodeFileWriter.fixtures';
 
 const {
@@ -14,16 +14,13 @@ const {
   getConfigForAppendTest,
   getConfigForNoTemplateTest,
   getFileInfo,
+  getSharedModuleInfo,
   getConfigForFolderTest,
 } = codeFileWriterFixtures;
 
 function createMockFn() {
   const compile = vi.fn((async (templateText, data) => {
-    const template = Handlebars.compile(templateText);
-
-    const source = template(data);
-
-    return source;
+    return compileTemplate(templateText, data);
   }) as TemplateCompiler);
 
   const read = vi.fn((async () => {
@@ -76,8 +73,8 @@ describe('CodeFileWriterService', () => {
     const result = await service.makeAll(config, fileInfo);
 
     const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.subName}`;
-    const samplePath0 = `src/feat/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}Awesome.tsx`;
-    const samplePath1 = `src/feat/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}.tsx`;
+    const samplePath0 = `src/features/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}Awesome.tsx`;
+    const samplePath1 = `src/features/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}.tsx`;
 
     afterAll(() => {
       compile.mockClear();
@@ -108,6 +105,137 @@ describe('CodeFileWriterService', () => {
       expect(write).toBeCalledTimes(config.files.length);
       expect(write).toBeCalledWith(samplePath0, sampleSourceCode, false);
       expect(write).toBeCalledWith(samplePath1, sampleSourceCode, true);
+    });
+  });
+
+  describe('공용 모듈 경로 예외처리', async () => {
+    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const service = new CodeFileWriterService(
+      read,
+      compile,
+      write,
+      append,
+      mkdir
+    );
+    const config = getConfig();
+    const fileInfo = getSharedModuleInfo();
+    const result = await service.makeAll(config, fileInfo);
+
+    const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.subName}`;
+    const samplePath0 = `src/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}Awesome.tsx`;
+    const samplePath1 = `src/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}.tsx`;
+
+    afterAll(() => {
+      compile.mockClear();
+      read.mockClear();
+      write.mockClear();
+      append.mockClear();
+      appendLogic.mockClear();
+      mkdir.mockClear();
+    });
+
+    it('만들어진 결과 개수는 설정 정보 개수와 일치한다.', () => {
+      expect(result).toBe(config.files.length);
+    });
+
+    it('설정된 템플릿 정보만큼 파일을 호출한다.', () => {
+      expect(read).toBeCalledTimes(config.files.length);
+      expect(read).toBeCalledWith(config.files[0].template);
+      expect(read).toBeCalledWith(config.files[1].template);
+    });
+
+    it('설정된 템플릿 정보만큼 컴파일한다.', () => {
+      expect(compile).toBeCalledTimes(config.files.length * 2);
+      expect(compile).toHaveReturnedWith(sampleSourceCode);
+      expect(compile).toHaveReturnedWith(samplePath0);
+    });
+
+    it('설정된 정보만큼 소스코드 파일을 만든다.', () => {
+      expect(write).toBeCalledTimes(config.files.length);
+      expect(write).toBeCalledWith(samplePath0, sampleSourceCode, false);
+      expect(write).toBeCalledWith(samplePath1, sampleSourceCode, true);
+    });
+  });
+
+  describe('exclude 옵션 처리', () => {
+    describe('상위 카테고리 계열', () => {
+      const { read, compile, write, append, appendLogic, mkdir } =
+        createMockFn();
+      const service = new CodeFileWriterService(
+        read,
+        compile,
+        write,
+        append,
+        mkdir
+      );
+
+      afterEach(() => {
+        compile.mockClear();
+        read.mockClear();
+        write.mockClear();
+        append.mockClear();
+        appendLogic.mockClear();
+        mkdir.mockClear();
+      });
+
+      it('모듈명이 exclude 에 포함 된다면, 모든 하위 구성 요소를 만들지 않는다.', async () => {
+        const config = getConfig(['sonic', 'tails']);
+        const fileInfo = getSharedModuleInfo('sonic');
+        const result = await service.makeAll(config, fileInfo);
+
+        expect(result).toBe(0);
+        expect(read).not.toBeCalled();
+        expect(write).not.toBeCalled();
+        expect(compile).not.toBeCalled();
+      });
+      it('모듈명이 exclude 에 포함되지 않았다면 정상적으로 하위 요소들을 만든다.', async () => {
+        const config = getConfig(['sonic', 'tails']);
+        const fileInfo = getSharedModuleInfo('eggman');
+        const result = await service.makeAll(config, fileInfo);
+
+        expect(result).toBe(2);
+        expect(read).toBeCalled();
+        expect(write).toBeCalled();
+        expect(compile).toBeCalled();
+      });
+    });
+
+    describe('하위 파일 목록', () => {
+      const { read, compile, write, append, appendLogic, mkdir } =
+        createMockFn();
+      const service = new CodeFileWriterService(
+        read,
+        compile,
+        write,
+        append,
+        mkdir
+      );
+
+      afterEach(() => {
+        compile.mockClear();
+        read.mockClear();
+        write.mockClear();
+        append.mockClear();
+        appendLogic.mockClear();
+        mkdir.mockClear();
+      });
+
+      it('하위 구성요소의 exclude 에 포함된 모듈은 해당 파일을 만들지 않는다.', async () => {
+        const config = getConfig([], ['lookpin']);
+        const fileInfo = getSharedModuleInfo('lookpin');
+        const result = await service.makeAll(config, fileInfo);
+
+        expect(result).toBe(1);
+        expect(write).toBeCalledTimes(1);
+      });
+      it('하위 구성요소의 exclude 에 포함되지 않았다면 정상적으로 모든 파일을 만든다.', async () => {
+        const config = getConfig([], ['lookpin']);
+        const fileInfo = getSharedModuleInfo('eggman');
+        const result = await service.makeAll(config, fileInfo);
+
+        expect(result).toBe(2);
+        expect(write).toBeCalledTimes(2);
+      });
     });
   });
 
