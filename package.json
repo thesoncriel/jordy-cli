@@ -1,6 +1,6 @@
 {
   "name": "ts-fe-cli",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "CLI tool for front-end develop with ts-fe-toolkit",
   "main": "./build/index.js",
   "scripts": {
