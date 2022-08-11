@@ -25,5 +25,5 @@ $ npm install ts-fe-cli
 아래는 기능 모듈(feature module) 생성 예시입니다.
 
 ```sh
-npm run cli feat add lookpin/userQuestion
+npm run cli feat lookpin userQuestion
 ```
