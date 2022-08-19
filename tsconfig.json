@@ -16,7 +16,7 @@
     "types": ["vitest/globals"],
     "baseUrl": ".",
     "paths": {
-      "ts-fe-cli": [
+      "jordy-cli": [
         "packages/index"
       ]
     }

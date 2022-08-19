@@ -1,8 +1,8 @@
 # jordy-cli
 
-업무용 프로젝트 아키텍처에서 쓰일 CLI 도구입니다.
+[jordy](https://github.com/thesoncriel/jordy) 라이브러리와 함ㅔ 업무용 프론트엔드 프로젝트 아키텍처에서 쓰일 CLI 도구입니다.
 
-개발 중입니다. 😅
+현재 개발 중입니다. 😅
 
 ## 설치
 
