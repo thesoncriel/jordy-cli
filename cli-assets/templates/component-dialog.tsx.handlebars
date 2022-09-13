@@ -1,6 +1,6 @@
 import { ReactNode, forwardRef, useImperativeHandle, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { PromiseResolverDto } from 'jordy';
+import { PromiseResolver } from 'jordy';
 
 interface {{fileName}}Props {
   defaultShow?: boolean;
@@ -23,7 +23,7 @@ export const {{fileName}} = forwardRef<
   children,
   ...props,
 }, ref) => {
-  const refResolver = useRef<PromiseResolverDto<void> | null>(null);
+  const refResolver = useRef<PromiseResolver<void> | null>(null);
   const [show, setShow] = useState(defaultShow);
 
   useImperativeHandle(
