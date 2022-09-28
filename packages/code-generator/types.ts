@@ -13,6 +13,7 @@ export type CodeGeneratorStoresConfigKeyType =
 export interface FeatureNameInfoDto {
   fullName: string;
   fullNameAsPascalCase: string;
+  storybookTitle: string;
   featureName: string;
   featureNameAsPascalCase: string;
   subName: string;

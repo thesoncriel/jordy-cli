@@ -92,11 +92,16 @@ export class TypeScriptFilePathParser implements FilePathParser {
   }
 
   findSubNameFrom(splittedPath: string[]) {
+    let isComponents = false;
     const values = this.subLayers.reduce((arr, sub) => {
       const index = splittedPath.indexOf(sub) + 1;
 
       if (index > 0) {
         const value = splittedPath[index];
+
+        if (sub === 'components' && !isComponents) {
+          isComponents = true;
+        }
 
         if (value && value.includes('.') === false) {
           arr.push(value);
@@ -107,6 +112,9 @@ export class TypeScriptFilePathParser implements FilePathParser {
     }, [] as string[]);
 
     if (values.length === 0) {
+      if (isComponents) {
+        return '';
+      }
       throw new Error('extract fail - sub name not found');
     }
 
@@ -117,7 +125,7 @@ export class TypeScriptFilePathParser implements FilePathParser {
     try {
       return this.findSubNameFrom(splitPath);
     } catch (error) {
-      return TypeScriptFilePathParser.DEFAULT_SUB_NAME;
+      return '';
     }
   }
 
@@ -125,11 +133,13 @@ export class TypeScriptFilePathParser implements FilePathParser {
     const splitPath = path.split(/\/|\\/);
     let featureNameInfo;
 
-    if (splitPath.length <= 2) {
+    if (splitPath.length === 2) {
       featureNameInfo = new FeatureNameInfo(
         splitPath[0],
         splitPath[1] || TypeScriptFilePathParser.DEFAULT_SUB_NAME
       );
+    } else if (splitPath.length < 2) {
+      featureNameInfo = new FeatureNameInfo(splitPath[0]);
     } else {
       const featureName = this.findFeatureNameFrom(splitPath);
       const subName = this.tryFindSubNameFrom(splitPath);

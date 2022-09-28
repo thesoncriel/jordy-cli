@@ -26,7 +26,7 @@ export default async function codeGeneratorCLI() {
   program
     .command('feat')
     .argument('<name>', 'feature name')
-    .argument('[sub]', 'sub-feature name (default : basic)')
+    .argument('[sub]', 'sub-feature name')
     .action((name, sub) => {
       const fileInfo = createFilePathParser().parse(name, sub);
 

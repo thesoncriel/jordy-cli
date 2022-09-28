@@ -8,6 +8,10 @@ Handlebars.registerHelper('withFeature', function (value) {
   return `${COMMON_FEATURE_NAMES.includes(value) ? '' : 'features/'}${value}`;
 });
 
+Handlebars.registerHelper('withSub', function (value) {
+  return value ? `/${value}` : '';
+});
+
 export function toCapitalize(value: string) {
   if (!value || typeof value !== 'string' || value.length === 0) {
     return '';
