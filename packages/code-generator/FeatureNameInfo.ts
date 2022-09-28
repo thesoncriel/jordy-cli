@@ -5,6 +5,7 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
   private _featureNameAsPascalCase: string;
   private _fullNameAsPascalCase: string;
   private _fullName: string;
+  private _storybookTitle: string;
 
   get featureNameAsPascalCase() {
     return this._featureNameAsPascalCase;
@@ -14,6 +15,9 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
   }
   get fullName() {
     return this._fullName;
+  }
+  get storybookTitle() {
+    return this._storybookTitle;
   }
 
   constructor(
@@ -25,6 +29,7 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
     this._featureNameAsPascalCase = toCapitalize(featureName);
     this._fullNameAsPascalCase = `${this._featureNameAsPascalCase}${subNameAsPascalCase}`;
     this._fullName = `${featureName}${subNameAsPascalCase}`;
+    this._storybookTitle = subName ? `${featureName}/${subName}` : featureName;
   }
 
   toPlainObject(): FeatureNameInfoDto {
@@ -33,6 +38,7 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
       featureNameAsPascalCase: this.featureNameAsPascalCase,
       fullName: this.fullName,
       fullNameAsPascalCase: this.fullNameAsPascalCase,
+      storybookTitle: this.storybookTitle,
       subName: this.subName,
     };
 

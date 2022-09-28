@@ -22,6 +22,11 @@ export class FeatureFileInfo implements FeatureFileInfoDto {
   get fullNameAsPascalCase() {
     return this.config.fullNameAsPascalCase;
   }
+  get storybookTitle() {
+    return this.subName
+      ? `${this.featureName}/${this.subName}`
+      : this.featureName;
+  }
   get subName() {
     return this.config.subName;
   }
@@ -81,6 +86,7 @@ export class FeatureFileInfo implements FeatureFileInfoDto {
       fileExt: this.fileExt,
       fullName: this.fullName,
       fullNameAsPascalCase: this.fullNameAsPascalCase,
+      storybookTitle: this.storybookTitle,
       featureName: this.featureName,
       featureNameAsPascalCase: this.featureNameAsPascalCase,
       subName: this.subName,

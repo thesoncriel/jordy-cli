@@ -89,6 +89,7 @@ describe('TypeScriptFilePathParser', () => {
       expect(result).toEqual({
         fullName: 'sonicBoomSeries',
         fullNameAsPascalCase: 'SonicBoomSeries',
+        storybookTitle: 'sonic/boomSeries',
         featureName: 'sonic',
         featureNameAsPascalCase: 'Sonic',
         subName: 'boomSeries',
@@ -106,6 +107,7 @@ describe('TypeScriptFilePathParser', () => {
       expect(result).toEqual({
         fullName: 'sonicBoomSeries',
         fullNameAsPascalCase: 'SonicBoomSeries',
+        storybookTitle: 'sonic/boomSeries',
         featureName: 'sonic',
         featureNameAsPascalCase: 'Sonic',
         subName: 'boomSeries',
@@ -121,12 +123,31 @@ describe('TypeScriptFilePathParser', () => {
       ).toThrowError();
     });
 
+    it('컴포넌트 경로에 sub name 이 포함 안되어있다면 sub name 은 빈값 취급된다.', () => {
+      const result = parser.parse(
+        '/home/theson/lookpin-prj/src/features/sonic/components/GreenHillView.tsx'
+      );
+
+      expect(result).toEqual({
+        fullName: 'sonic',
+        fullNameAsPascalCase: 'Sonic',
+        storybookTitle: 'sonic',
+        featureName: 'sonic',
+        featureNameAsPascalCase: 'Sonic',
+        subName: '',
+        fileName: 'GreenHillView',
+        fileExt: 'tsx',
+        fileNameAsPascalCase: 'GreenHillView',
+      });
+    });
+
     it('두가지 인자값을 넣으면 첫번째를 main feature, 두번째를 sub feature 로 인식한다.', () => {
       const result = parser.parse('lookpin', 'search');
 
       expect(result).toEqual({
         fullName: 'lookpinSearch',
         fullNameAsPascalCase: 'LookpinSearch',
+        storybookTitle: 'lookpin/search',
         featureName: 'lookpin',
         featureNameAsPascalCase: 'Lookpin',
         subName: 'search',
@@ -142,6 +163,7 @@ describe('TypeScriptFilePathParser', () => {
       expect(result).toEqual({
         fullName: 'lookpinBasic',
         fullNameAsPascalCase: 'LookpinBasic',
+        storybookTitle: 'lookpin/basic',
         featureName: 'lookpin',
         featureNameAsPascalCase: 'Lookpin',
         subName: 'basic',
@@ -157,6 +179,7 @@ describe('TypeScriptFilePathParser', () => {
       expect(result).toEqual({
         fullName: 'lookpinBasic',
         fullNameAsPascalCase: 'LookpinBasic',
+        storybookTitle: 'lookpin/basic',
         featureName: 'lookpin',
         featureNameAsPascalCase: 'Lookpin',
         subName: 'basic',
@@ -170,54 +193,119 @@ describe('TypeScriptFilePathParser', () => {
   describe('parseForComponent', () => {
     const parser = new TypeScriptFilePathParser();
 
-    it('모듈과 하위 모듈 명칭, 그리고 컴포넌트 명칭으로 분석된 결과를 만들수 있다.', () => {
-      const result = parser.parseForComponent('lookpin/search', 'SearchTable');
+    describe('모듈과 하위 모듈 명칭, 그리고 컴포넌트 명칭으로 분석된 결과를 만들수 있다.', () => {
+      it('하위 모듈 포함', () => {
+        const result = parser.parseForComponent(
+          'lookpin/search',
+          'SearchTable'
+        );
 
-      expect(result).toEqual({
-        fullName: 'lookpinSearch',
-        fullNameAsPascalCase: 'LookpinSearch',
-        featureName: 'lookpin',
-        featureNameAsPascalCase: 'Lookpin',
-        subName: 'search',
-        fileName: 'SearchTable',
-        fileExt: 'tsx',
-        fileNameAsPascalCase: 'SearchTable',
+        expect(result).toEqual({
+          fullName: 'lookpinSearch',
+          fullNameAsPascalCase: 'LookpinSearch',
+          storybookTitle: 'lookpin/search',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: 'search',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
+      });
+      it('하위 모듈 없음', () => {
+        const result = parser.parseForComponent('lookpin', 'SearchTable');
+
+        expect(result).toEqual({
+          fullName: 'lookpin',
+          fullNameAsPascalCase: 'Lookpin',
+          storybookTitle: 'lookpin',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: '',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
       });
     });
 
-    it('실제 폴더 경로와 컴포넌트 명칭으로 의도대로 분석된다.', () => {
-      const result = parser.parseForComponent(
-        '/home/theson/work/myProject/src/features/lookpin/components/search',
-        'SearchTable'
-      );
+    describe('실제 폴더 경로와 컴포넌트 명칭으로 의도대로 분석된다.', () => {
+      it('하위 경로 포함', () => {
+        const result = parser.parseForComponent(
+          '/home/theson/work/myProject/src/features/lookpin/components/search',
+          'SearchTable'
+        );
 
-      expect(result).toEqual({
-        fullName: 'lookpinSearch',
-        fullNameAsPascalCase: 'LookpinSearch',
-        featureName: 'lookpin',
-        featureNameAsPascalCase: 'Lookpin',
-        subName: 'search',
-        fileName: 'SearchTable',
-        fileExt: 'tsx',
-        fileNameAsPascalCase: 'SearchTable',
+        expect(result).toEqual({
+          fullName: 'lookpinSearch',
+          fullNameAsPascalCase: 'LookpinSearch',
+          storybookTitle: 'lookpin/search',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: 'search',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
+      });
+
+      it('하위 경로 없음', () => {
+        const result = parser.parseForComponent(
+          '/home/theson/work/myProject/src/features/lookpin/components',
+          'SearchTable'
+        );
+
+        expect(result).toEqual({
+          fullName: 'lookpin',
+          fullNameAsPascalCase: 'Lookpin',
+          storybookTitle: 'lookpin',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: '',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
       });
     });
 
-    it('상대 경로를 주어도 의도대로 분석된다.', () => {
-      const result = parser.parseForComponent(
-        './src/features/lookpin/components/search',
-        'SearchTable'
-      );
+    describe('상대 경로를 주어도 의도대로 분석된다.', () => {
+      it('하위경로 포함', () => {
+        const result = parser.parseForComponent(
+          './src/features/lookpin/components/search',
+          'SearchTable'
+        );
 
-      expect(result).toEqual({
-        fullName: 'lookpinSearch',
-        fullNameAsPascalCase: 'LookpinSearch',
-        featureName: 'lookpin',
-        featureNameAsPascalCase: 'Lookpin',
-        subName: 'search',
-        fileName: 'SearchTable',
-        fileExt: 'tsx',
-        fileNameAsPascalCase: 'SearchTable',
+        expect(result).toEqual({
+          fullName: 'lookpinSearch',
+          fullNameAsPascalCase: 'LookpinSearch',
+          storybookTitle: 'lookpin/search',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: 'search',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
+      });
+
+      it('하위경로 없음', () => {
+        const result = parser.parseForComponent(
+          './src/features/lookpin/components',
+          'SearchTable'
+        );
+
+        expect(result).toEqual({
+          fullName: 'lookpin',
+          fullNameAsPascalCase: 'Lookpin',
+          storybookTitle: 'lookpin',
+          featureName: 'lookpin',
+          featureNameAsPascalCase: 'Lookpin',
+          subName: '',
+          fileName: 'SearchTable',
+          fileExt: 'tsx',
+          fileNameAsPascalCase: 'SearchTable',
+        });
       });
     });
 
@@ -228,11 +316,12 @@ describe('TypeScriptFilePathParser', () => {
       );
 
       expect(result).toEqual({
-        fullName: 'lookpinBasic',
-        fullNameAsPascalCase: 'LookpinBasic',
+        fullName: 'lookpin',
+        fullNameAsPascalCase: 'Lookpin',
+        storybookTitle: 'lookpin',
         featureName: 'lookpin',
         featureNameAsPascalCase: 'Lookpin',
-        subName: 'basic',
+        subName: '',
         fileName: 'OtherViewPanel',
         fileExt: 'tsx',
         fileNameAsPascalCase: 'OtherViewPanel',
@@ -246,11 +335,12 @@ describe('TypeScriptFilePathParser', () => {
       );
 
       expect(result).toEqual({
-        fullName: 'lookpinBasic',
-        fullNameAsPascalCase: 'LookpinBasic',
+        fullName: 'lookpin',
+        fullNameAsPascalCase: 'Lookpin',
+        storybookTitle: 'lookpin',
         featureName: 'lookpin',
         featureNameAsPascalCase: 'Lookpin',
-        subName: 'basic',
+        subName: '',
         fileName: 'OtherViewPanel',
         fileExt: 'tsx',
         fileNameAsPascalCase: 'OtherViewPanel',

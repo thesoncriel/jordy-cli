@@ -23,6 +23,10 @@ describe('FeatureNameConfig', () => {
     it('full name 을 PascalCase 로 가져올 수 있다.', () => {
       expect(config.fullNameAsPascalCase).toBe('MyPhoneBlockThing');
     });
+
+    it('storybook title 은 feature 와 sub 사이에 슬래시(/)가 포함된다.', () => {
+      expect(config.storybookTitle).toBe('myPhone/blockThing');
+    });
   });
 
   describe('feature 명칭만 설정', () => {
@@ -46,6 +50,10 @@ describe('FeatureNameConfig', () => {
 
     it('full name 을 PascalCase 로 가져올 수 있다.', () => {
       expect(config.fullNameAsPascalCase).toBe('MyPhone');
+    });
+
+    it('storybook title 은 feature 만 포함된다.', () => {
+      expect(config.storybookTitle).toBe('myPhone');
     });
   });
 });

@@ -82,7 +82,7 @@
   },
   "components": {
     "normal": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}",
       "excludes": ["core"],
       "files": [
         {
@@ -92,7 +92,7 @@
       ]
     },
     "dialog": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}",
       "excludes": ["core"],
       "files": [
         {
@@ -102,7 +102,7 @@
       ]
     },
     "imperative": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}",
       "excludes": ["core"],
       "files": [
         {
@@ -112,7 +112,7 @@
       ]
     },
     "memo": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}",
       "excludes": ["core"],
       "files": [
         {
@@ -124,7 +124,7 @@
   },
   "storybook": {
     "normal": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}/_stories",
       "excludes": ["core"],
       "files": [
         {
@@ -134,7 +134,7 @@
       ]
     },
     "dialog": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}/_stories",
       "excludes": ["core"],
       "files": [
         {
@@ -144,7 +144,7 @@
       ]
     },
     "imperative": {
-      "base": "src/{{withFeature featureName}}/components/{{subName}}/_stories",
+      "base": "src/{{withFeature featureName}}/components{{withSub subName}}/_stories",
       "excludes": ["core"],
       "files": [
         {
