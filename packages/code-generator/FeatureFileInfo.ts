@@ -22,13 +22,37 @@ export class FeatureFileInfo implements FeatureFileInfoDto {
   get fullNameAsPascalCase() {
     return this.config.fullNameAsPascalCase;
   }
+
+  private _storybookTitle: string;
   get storybookTitle() {
-    return this.subName
-      ? `${this.featureName}/${this.subName}`
-      : this.featureName;
+    if (!this._storybookTitle) {
+      this._storybookTitle =
+        Array.isArray(this.subNames) && this.subNames.length > 0
+          ? `${this.featureName}/${this.subNames.join('/')}`
+          : this.featureName;
+    }
+
+    return this._storybookTitle;
   }
-  get subName() {
-    return this.config.subName;
+
+  get subNames() {
+    return this.config.subNames;
+  }
+
+  private _subPath: string;
+  get subPath() {
+    if (!this._subPath) {
+      this._subPath = this.subNames.join('/');
+    }
+
+    return this._subPath;
+  }
+
+  get firstSubName() {
+    if (this.subNames.length > 0) {
+      return this.subNames[0];
+    }
+    return '';
   }
 
   get fileName() {
@@ -89,7 +113,9 @@ export class FeatureFileInfo implements FeatureFileInfoDto {
       storybookTitle: this.storybookTitle,
       featureName: this.featureName,
       featureNameAsPascalCase: this.featureNameAsPascalCase,
-      subName: this.subName,
+      subNames: this.subNames,
+      subPath: this.subPath,
+      firstSubName: this.firstSubName,
     };
     return result;
   }
