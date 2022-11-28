@@ -16,7 +16,9 @@ export interface FeatureNameInfoDto {
   storybookTitle: string;
   featureName: string;
   featureNameAsPascalCase: string;
-  subName: string;
+  subNames: string[];
+  subPath: string;
+  firstSubName: string;
 }
 
 export interface SimpleFileInfoDto {

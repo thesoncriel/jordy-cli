@@ -24,7 +24,7 @@ function createMockFn() {
   }) as TemplateCompiler);
 
   const read = vi.fn((async () => {
-    const result = '{{featureName}}.{{subName}}';
+    const result = '{{featureName}}.{{firstSubName}}';
 
     return result;
   }) as TextFileReaderFn);
@@ -59,7 +59,7 @@ function createMockFn() {
 }
 
 describe('CodeFileWriterService', () => {
-  describe('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
+  describe.only('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
     const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
     const service = new CodeFileWriterService(
       read,
@@ -72,9 +72,9 @@ describe('CodeFileWriterService', () => {
     const fileInfo = getFileInfo();
     const result = await service.makeAll(config, fileInfo);
 
-    const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.subName}`;
-    const samplePath0 = `src/features/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}Awesome.tsx`;
-    const samplePath1 = `src/features/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}.tsx`;
+    const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.firstSubName}`;
+    const samplePath0 = `src/features/${fileInfo.featureName}/${fileInfo.subPath}/${fileInfo.fileName}Awesome.tsx`;
+    const samplePath1 = `src/features/${fileInfo.featureName}/${fileInfo.subPath}/${fileInfo.fileName}.tsx`;
 
     afterAll(() => {
       compile.mockClear();
@@ -95,7 +95,7 @@ describe('CodeFileWriterService', () => {
       expect(read).toBeCalledWith(config.files[1].template);
     });
 
-    it('설정된 템플릿 정보만큼 컴파일한다.', () => {
+    it('설정된 템플릿 정보만큼 컴파일한다.', async () => {
       expect(compile).toBeCalledTimes(config.files.length * 2);
       expect(compile).toHaveReturnedWith(sampleSourceCode);
       expect(compile).toHaveReturnedWith(samplePath0);
@@ -121,9 +121,9 @@ describe('CodeFileWriterService', () => {
     const fileInfo = getSharedModuleInfo();
     const result = await service.makeAll(config, fileInfo);
 
-    const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.subName}`;
-    const samplePath0 = `src/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}Awesome.tsx`;
-    const samplePath1 = `src/${fileInfo.featureName}/${fileInfo.subName}/${fileInfo.fileName}.tsx`;
+    const sampleSourceCode = `${fileInfo.featureName}.${fileInfo.firstSubName}`;
+    const samplePath0 = `src/${fileInfo.featureName}/${fileInfo.subPath}/${fileInfo.fileName}Awesome.tsx`;
+    const samplePath1 = `src/${fileInfo.featureName}/${fileInfo.subPath}/${fileInfo.fileName}.tsx`;
 
     afterAll(() => {
       compile.mockClear();
@@ -266,7 +266,7 @@ describe('CodeFileWriterService', () => {
       expect(result).toBe(1);
       expect(write).toBeCalledWith(
         `${config.base}/some/already/exists/${fileInfo.fileName}.ts`,
-        `${fileInfo.featureName}.${fileInfo.subName}`,
+        `${fileInfo.featureName}.${fileInfo.firstSubName}`,
         true
       );
       expect(append).not.toBeCalled();
@@ -278,7 +278,7 @@ describe('CodeFileWriterService', () => {
       expect(result).toBe(1);
       expect(write).toBeCalledWith(
         `${config.base}/any/already/exists/${fileInfo.fullName}.ts`,
-        `${fileInfo.featureName}.${fileInfo.subName}`,
+        `${fileInfo.featureName}.${fileInfo.firstSubName}`,
         false
       );
       expect(append).toBeCalled();
@@ -290,7 +290,7 @@ describe('CodeFileWriterService', () => {
 
       expect(write).toBeCalledWith(
         `${config.base}/any/already/exists/${fileInfo.fullName}.ts`,
-        `${fileInfo.featureName}.${fileInfo.subName}`,
+        `${fileInfo.featureName}.${fileInfo.firstSubName}`,
         false
       );
       expect(append).toBeCalled();
@@ -350,7 +350,7 @@ describe('CodeFileWriterService', () => {
       );
       expect(mkdir).toBeCalledWith(`someSrcPath/${fileInfo.featureName}/pages`);
       expect(mkdir).toBeCalledWith(
-        `someSrcPath/${fileInfo.featureName}/some/${fileInfo.subName}/elements`
+        `someSrcPath/${fileInfo.featureName}/some/${fileInfo.subPath}/elements`
       );
     });
   });

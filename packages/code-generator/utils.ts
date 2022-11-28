@@ -8,11 +8,17 @@ Handlebars.registerHelper('withFeature', function (value) {
   return `${COMMON_FEATURE_NAMES.includes(value) ? '' : 'features/'}${value}`;
 });
 
-Handlebars.registerHelper('withSub', function (value) {
+Handlebars.registerHelper('withSubPath', function (value) {
+  if (Array.isArray(value)) {
+    return `/${value.join('/')}`;
+  }
   return value ? `/${value}` : '';
 });
 
-export function toCapitalize(value: string) {
+export function toCapitalize(value: string | string[]): string {
+  if (Array.isArray(value)) {
+    return value.map(toCapitalize).join('');
+  }
   if (!value || typeof value !== 'string' || value.length === 0) {
     return '';
   }

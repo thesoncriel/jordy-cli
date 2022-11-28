@@ -6,7 +6,7 @@ function getConfig(
   childExcludes: string[] = []
 ) {
   const config: CodeGeneratorPathConfigDto = {
-    base: 'src/{{withFeature featureName}}/{{subName}}',
+    base: 'src/{{withFeature featureName}}/{{firstSubName}}',
     excludes: parentExcludes,
     files: [
       {
@@ -72,14 +72,17 @@ function getFileInfo() {
     fullNameAsPascalCase: 'LookpinBestShop',
     featureName: 'lookpin',
     featureNameAsPascalCase: 'Lookpin',
-    subName: 'bestShop',
+    subNames: ['bestShop'],
+    subPath: 'bestShop',
+    firstSubName: 'bestShop',
+    storybookTitle: '',
   };
   return fileInfo;
 }
 
 function getSharedModuleInfo(
   featureName = 'shared',
-  subName = 'memberInfo',
+  subNames = ['memberInfo'],
   fileName = 'SortableList.tsx'
 ) {
   const featureNameAsPascalCase = toCapitalize(featureName);
@@ -89,11 +92,14 @@ function getSharedModuleInfo(
     fileName: splittedFileName[0],
     fileExt: splittedFileName[1],
     fileNameAsPascalCase: splittedFileName[0],
-    fullName: `${featureName}${toCapitalize(subName)}`,
-    fullNameAsPascalCase: `${featureNameAsPascalCase}${toCapitalize(subName)}`,
+    fullName: `${featureName}${toCapitalize(subNames)}`,
+    fullNameAsPascalCase: `${featureNameAsPascalCase}${toCapitalize(subNames)}`,
     featureName,
     featureNameAsPascalCase,
-    subName,
+    subNames,
+    subPath: subNames.join('/'),
+    firstSubName: subNames[0],
+    storybookTitle: '',
   };
   return fileInfo;
 }
@@ -113,7 +119,7 @@ function getConfigForFolderTest() {
         folderName: 'pages',
       },
       {
-        folderName: 'some/{{subName}}/elements',
+        folderName: 'some/{{subPath}}/elements',
       },
     ],
   };
