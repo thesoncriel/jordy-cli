@@ -6,6 +6,8 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
   private _fullNameAsPascalCase: string;
   private _fullName: string;
   private _storybookTitle: string;
+  private _subPath = '';
+  private _firstSubName = '';
 
   get featureNameAsPascalCase() {
     return this._featureNameAsPascalCase;
@@ -19,17 +21,30 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
   get storybookTitle() {
     return this._storybookTitle;
   }
+  public get subPath(): string {
+    return this._subPath;
+  }
+  public get firstSubName(): string {
+    return this._firstSubName;
+  }
 
   constructor(
     public readonly featureName: string,
-    public readonly subName: string = ''
+    public readonly subNames: string[] = []
   ) {
-    const subNameAsPascalCase = toCapitalize(subName);
+    const subNameAsPascalCase = toCapitalize(subNames);
 
     this._featureNameAsPascalCase = toCapitalize(featureName);
     this._fullNameAsPascalCase = `${this._featureNameAsPascalCase}${subNameAsPascalCase}`;
     this._fullName = `${featureName}${subNameAsPascalCase}`;
-    this._storybookTitle = subName ? `${featureName}/${subName}` : featureName;
+    this._storybookTitle = featureName;
+
+    if (Array.isArray(subNames) && subNames.length > 0) {
+      this._subPath = subNames.join('/');
+      this._firstSubName = subNames[0];
+
+      this._storybookTitle = `${featureName}/${this._subPath}`;
+    }
   }
 
   toPlainObject(): FeatureNameInfoDto {
@@ -39,16 +54,18 @@ export class FeatureNameInfo implements FeatureNameInfoDto {
       fullName: this.fullName,
       fullNameAsPascalCase: this.fullNameAsPascalCase,
       storybookTitle: this.storybookTitle,
-      subName: this.subName,
+      subNames: this.subNames,
+      subPath: this.subPath,
+      firstSubName: this.firstSubName,
     };
 
     return result;
   }
 }
 
-export function createFeatureNameConfig(
+export function createFeatureNameInfo(
   featureName: string,
-  subName?: string
+  subName?: string[]
 ): FeatureNameInfoDto {
   return new FeatureNameInfo(featureName, subName).toPlainObject();
 }

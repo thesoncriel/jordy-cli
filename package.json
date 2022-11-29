@@ -1,16 +1,17 @@
 {
   "name": "jordy-cli",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "CLI tool for front-end develop with jordy library",
   "main": "./build/index.js",
   "scripts": {
-    "clean": "rimraf  build",
+    "clean": "rimraf build",
     "bundle": "esbuild packages/index.ts --bundle --platform=node --outfile=build/index.js",
     "build": "npm-run-all clean bundle",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "prettier": "prettier './packages/**/*.ts'",
     "lint": "eslint 'packages/**'",
+    "clean:src": "rimraf src",
     "test:cli": "sh ./cli-test.sh"
   },
   "bin": {

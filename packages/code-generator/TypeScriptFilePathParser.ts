@@ -1,7 +1,11 @@
 import { COMMON_FEATURE_NAMES } from './constants';
 import { FeatureFileInfo } from './FeatureFileInfo';
 import { FeatureNameInfo } from './FeatureNameInfo';
-import { FeatureFileInfoDto, FilePathParser } from './types';
+import {
+  FeatureFileInfoDto,
+  FeatureNameInfoDto,
+  FilePathParser,
+} from './types';
 import { isString } from './utils';
 
 export class TypeScriptFilePathParser implements FilePathParser {
@@ -15,18 +19,15 @@ export class TypeScriptFilePathParser implements FilePathParser {
     private extList = ['ts', 'tsx']
   ) {}
 
-  parseByNames(featureName: string, subName: string): FeatureFileInfoDto {
-    const featureNameInfo = new FeatureNameInfo(
-      featureName,
-      subName || TypeScriptFilePathParser.DEFAULT_SUB_NAME
-    );
+  parseByNames(featureName: string, subNames: string[]): FeatureFileInfoDto {
+    const featureNameInfo = new FeatureNameInfo(featureName, subNames);
 
     return new FeatureFileInfo(featureNameInfo, '').toPlainObject();
   }
 
   parse(arg0: string, arg1?: string): FeatureFileInfoDto {
     if (isString(arg1) || arguments.length > 1) {
-      return this.parseByNames(arg0, arg1 || '');
+      return this.parseByNames(arg0, arg1 ? arg1.split('/') : []);
     }
     const { featureNameInfo, isFile, endPoint } = this.parsePath(arg0);
 
@@ -46,7 +47,7 @@ export class TypeScriptFilePathParser implements FilePathParser {
     const endPoint = splittedPath[splittedPath.length - 1];
     const isFile = this.extList.some((ext) => endPoint.endsWith(ext));
     const featureName = this.findFeatureNameFrom(splittedPath);
-    const subName = this.findSubNameFrom(splittedPath);
+    const subName = this.findSubNamesFrom(splittedPath);
 
     return {
       featureNameInfo: new FeatureNameInfo(featureName, subName),
@@ -91,29 +92,50 @@ export class TypeScriptFilePathParser implements FilePathParser {
     return this.findFeatureNameFrom(path.split(/\/|\\/));
   }
 
-  findSubNameFrom(splittedPath: string[]) {
+  findSubNamesBySubLayer(subLayer: string, splittedPath: string[]) {
+    const firstSubNameIndex = splittedPath.indexOf(subLayer) + 1;
+    const firstSubName = splittedPath[firstSubNameIndex];
+    let lastSubNameIndex = splittedPath.length - 1;
+    const lastSubName = splittedPath[lastSubNameIndex] || '';
+    const isComponents = subLayer === 'components' && firstSubNameIndex > 0;
+
+    if (!lastSubName || (lastSubName && lastSubName.includes('.'))) {
+      lastSubNameIndex = lastSubNameIndex - 1;
+    }
+
+    if (firstSubNameIndex === 0 || lastSubNameIndex < 1) {
+      return { isComponents, subNames: [] };
+    }
+
+    if (firstSubNameIndex === lastSubNameIndex) {
+      return { isComponents, subNames: [firstSubName] };
+    }
+
+    return {
+      isComponents,
+      subNames: splittedPath.slice(firstSubNameIndex, lastSubNameIndex + 1),
+    };
+  }
+
+  findSubNamesFrom(splittedPath: string[]) {
     let isComponents = false;
-    const values = this.subLayers.reduce((arr, sub) => {
-      const index = splittedPath.indexOf(sub) + 1;
+    const values = this.subLayers.reduce((arr, subLayer) => {
+      const foundItem = this.findSubNamesBySubLayer(subLayer, splittedPath);
 
-      if (index > 0) {
-        const value = splittedPath[index];
+      if (foundItem.isComponents && !isComponents) {
+        isComponents = true;
+      }
 
-        if (sub === 'components' && !isComponents) {
-          isComponents = true;
-        }
-
-        if (value && value.includes('.') === false) {
-          arr.push(value);
-        }
+      if (foundItem.subNames.length > 0) {
+        arr.push(foundItem.subNames);
       }
 
       return arr;
-    }, [] as string[]);
+    }, [] as string[][]);
 
     if (values.length === 0) {
       if (isComponents) {
-        return '';
+        return [];
       }
       throw new Error('extract fail - sub name not found');
     }
@@ -123,28 +145,29 @@ export class TypeScriptFilePathParser implements FilePathParser {
 
   tryFindSubNameFrom(splitPath: string[]) {
     try {
-      return this.findSubNameFrom(splitPath);
+      return this.findSubNamesFrom(splitPath);
     } catch (error) {
-      return '';
+      return [];
     }
   }
 
   parseForComponent(path: string, componentName: string) {
     const splitPath = path.split(/\/|\\/);
-    let featureNameInfo;
+    let featureNameInfo: FeatureNameInfoDto;
+
+    if (splitPath.length === 2 && !splitPath[1]) {
+      splitPath.pop();
+    }
 
     if (splitPath.length === 2) {
-      featureNameInfo = new FeatureNameInfo(
-        splitPath[0],
-        splitPath[1] || TypeScriptFilePathParser.DEFAULT_SUB_NAME
-      );
+      featureNameInfo = new FeatureNameInfo(splitPath[0], [splitPath[1]]);
     } else if (splitPath.length < 2) {
       featureNameInfo = new FeatureNameInfo(splitPath[0]);
     } else {
       const featureName = this.findFeatureNameFrom(splitPath);
-      const subName = this.tryFindSubNameFrom(splitPath);
+      const subNames = this.tryFindSubNameFrom(splitPath);
 
-      featureNameInfo = new FeatureNameInfo(featureName, subName);
+      featureNameInfo = new FeatureNameInfo(featureName, subNames);
     }
 
     return new FeatureFileInfo(
