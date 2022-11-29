@@ -59,7 +59,7 @@ function createMockFn() {
 }
 
 describe('CodeFileWriterService', () => {
-  describe.only('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
+  describe('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
     const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
     const service = new CodeFileWriterService(
       read,
