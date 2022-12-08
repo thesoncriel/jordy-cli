@@ -1,5 +1,6 @@
-import { CodeGeneratorPathConfigDto, FeatureFileInfoDto } from '../types';
+import { CodeGeneratorPathConfigDto } from '../types';
 import { toCapitalize } from '../utils';
+import { FeatureFileInfoDto } from '../../code-generator/types';
 
 function getConfig(
   parentExcludes: string[] = [],

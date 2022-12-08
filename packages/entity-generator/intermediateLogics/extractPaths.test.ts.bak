@@ -1,0 +1,27 @@
+import { extractIntermediatePropertyModel } from './extractProperty';
+import sampleJson from '../_fixtures/openapi_content_001.json';
+import { SchemaObject } from 'openapi3-ts';
+
+describe('extractDataPayloadProperties', () => {
+  const baseGiven =
+    sampleJson.paths['/some/version3/jordy/testSample/{id}'].get.responses[200]
+      .content['application/json'].schema;
+
+  it('openapi 스키마 자료를 중간 자료로 변환한다.', () => {
+    const result = extractIntermediatePropertyModel(
+      'lookpin',
+      baseGiven.properties.result.properties.data.properties
+        .normal as SchemaObject
+    );
+
+    expect(result).toEqual({
+      name: 'lookpin',
+      type: 'string',
+      nullable: false,
+      description: '죠르디 입니다.',
+      $ref: '',
+      oneOfProperties: [],
+      itemsProperty: [],
+    });
+  });
+});

@@ -1,19 +1,8 @@
 import fs from 'node:fs/promises';
 import { dirname } from 'path';
-import { AppendLogicDictionaryModel, FeatureFileInfoDto } from './types';
+import { CLI_ASSETS_NAME } from './constants';
+import { AppendLogicDictionaryModel, BaseFeatureFileInfoDto } from './types';
 import Handlebars from 'handlebars';
-import { CLI_ASSETS_NAME, COMMON_FEATURE_NAMES } from './constants';
-
-Handlebars.registerHelper('withFeature', function (value) {
-  return `${COMMON_FEATURE_NAMES.includes(value) ? '' : 'features/'}${value}`;
-});
-
-Handlebars.registerHelper('withSubPath', function (value) {
-  if (Array.isArray(value)) {
-    return `/${value.join('/')}`;
-  }
-  return value ? `/${value}` : '';
-});
 
 export function toCapitalize(value: string | string[]): string {
   if (Array.isArray(value)) {
@@ -30,8 +19,16 @@ export function toCapitalize(value: string | string[]): string {
   return `${trimmedValue.charAt(0).toUpperCase()}${trimmedValue.slice(1)}`;
 }
 
+export function snakeToCamel(str: string) {
+  return str.replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase());
+}
+
 export function isString(val: unknown): val is string {
   return typeof val === 'string' || val instanceof String;
+}
+
+export function hasPathParameter(path: string) {
+  return /\{[0-9A-z_\-.]+\}/.test(path);
 }
 
 export function filterByExcludesCurried(featureName: string) {
@@ -45,6 +42,24 @@ export function filterByExcludesCurried(featureName: string) {
   };
 }
 
+export async function compileTemplate<T extends BaseFeatureFileInfoDto>(
+  templateText: string,
+  data: T
+) {
+  const template = Handlebars.compile(templateText);
+
+  const source = template(data);
+
+  return source;
+}
+
+export function appendLineBreakToEOL(value: string) {
+  if (value.length > 2 && value[value.length - 1] !== '\n') {
+    return `${value}\n`;
+  }
+  return value;
+}
+
 export async function existsFile(filepath: string) {
   try {
     await fs.access(filepath);
@@ -53,29 +68,6 @@ export async function existsFile(filepath: string) {
   } catch (error) {
     return false;
   }
-}
-
-export async function readFile(filepath: string) {
-  let path = filepath;
-
-  if (filepath.startsWith('__defTemplates/')) {
-    path = filepath.replace(
-      '__defTemplates/',
-      `${__dirname}/../${CLI_ASSETS_NAME}/templates/`
-    );
-  }
-  return fs.readFile(path, { encoding: 'utf8' });
-}
-
-export async function compileTemplate(
-  templateText: string,
-  data: FeatureFileInfoDto
-) {
-  const template = Handlebars.compile(templateText);
-
-  const source = template(data);
-
-  return source;
 }
 
 export async function makeDirectory(targetPath: string) {
@@ -106,21 +98,25 @@ export async function writeFile(
   return true;
 }
 
-export function appendLineBreakToEOL(value: string) {
-  if (value.length > 2 && value[value.length - 1] !== '\n') {
-    return `${value}\n`;
+export async function readFile(filepath: string) {
+  let path = filepath;
+
+  if (filepath.startsWith('__defTemplates/')) {
+    path = filepath.replace(
+      '__defTemplates/',
+      `${__dirname}/../${CLI_ASSETS_NAME}/templates/`
+    );
   }
-  return value;
+  return fs.readFile(path, { encoding: 'utf8' });
 }
 
-export const appendLogicCurried =
-  (logicDic: AppendLogicDictionaryModel) =>
-  async (
+export const appendLogicCurried = (logicDic: AppendLogicDictionaryModel) =>
+  async function <T extends BaseFeatureFileInfoDto>(
     targetPath: string,
     nextCode: string,
-    data: FeatureFileInfoDto,
+    data: T,
     logic: string
-  ) => {
+  ) {
     const fn = logicDic[logic];
 
     if (!fn) {

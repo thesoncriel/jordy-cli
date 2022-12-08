@@ -1,3 +1,3 @@
-import cli from './code-generator';
+import cli from './cli';
 
 cli();

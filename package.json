@@ -41,7 +41,8 @@
   "dependencies": {
     "commander": "^9.4.0",
     "handlebars": "^4.7.7",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "openapi3-ts": "^3.1.2"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",

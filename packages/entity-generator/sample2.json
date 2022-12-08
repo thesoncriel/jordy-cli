@@ -1,0 +1,2197 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "v3_partners_product",
+    "version": "1.0",
+    "summary": "v3 파트너 코디 api endpoint",
+    "description": "v3 파트너 코디 api endpoint"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local"
+    },
+    {
+      "url": "https://api.dev.lookpin.co.kr",
+      "description": "Dev"
+    },
+    {
+      "url": "https://api.lookpin.co.kr",
+      "description": "Prod"
+    }
+  ],
+  "paths": {
+    "/api/v3/partners/products": {
+      "get": {
+        "summary": "v3 파트너 상품 목록 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_model_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "description": "상품 식별자"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "상품 이름"
+                              },
+                              "images": {
+                                "type": "object",
+                                "properties": {
+                                  "main": {
+                                    "type": "array",
+                                    "description": "메인 이미지 목록",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "detail": {
+                                    "type": "array",
+                                    "description": "상세 이미지 목록",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "상태",
+                                "enum": [
+                                  "sale",
+                                  "sale_stop",
+                                  "sale_wait",
+                                  "sale_out"
+                                ]
+                              },
+                              "status_text": {
+                                "type": "string",
+                                "description": "상태 텍스트"
+                              },
+                              "notice": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "공지사항"
+                              },
+                              "price": {
+                                "type": "integer",
+                                "description": "정상가격"
+                              },
+                              "discount_price": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "할인 가격"
+                              },
+                              "event_price": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "이벤트 가격"
+                              },
+                              "is_on_event_sale": {
+                                "type": "boolean",
+                                "description": "이벤트 세일중 여부"
+                              },
+                              "division1_name": {
+                                "type": "string",
+                                "description": "카테고리 대분류 이름"
+                              },
+                              "division2_name": {
+                                "type": "string",
+                                "description": "카테고리 소분류 이름"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "생성일시"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "수정일시"
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v3-partners-products",
+        "description": "v3 파트너 상품 목록 조회 api endpoint.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "스토어 식별자 ( admin 인 경우 전달)",
+            "name": "store_id"
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "product_ids",
+            "description": "상품 식별자 목록"
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "keywords",
+            "description": "검색어 목록"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "division1_name",
+            "description": "카테고리 대분류 이름"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "division2_name",
+            "description": "카테고리 소분류 이름"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "enum": [
+                "sale_wait",
+                "sale",
+                "sold_out",
+                "sale_stop"
+              ]
+            },
+            "in": "query",
+            "name": "statuses",
+            "description": "상품 상태 목록"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "in": "query",
+            "name": "created_at_gte",
+            "description": "생성 시작일시"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "in": "query",
+            "name": "created_at_lte",
+            "description": "생성 종료일시"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "updated_at_gte",
+            "description": "수정 시작일시"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "in": "query",
+            "name": "updated_at_lte",
+            "description": "수정 종료일시"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "newest",
+              "enum": [
+                "newest",
+                "trending",
+                "expensive",
+                "cheap",
+                "rising",
+                "discount_rate"
+              ]
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "정렬을 결정하는 파라미터"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[size]"
+          },
+          {
+            "$ref": "#/components/parameters/Param_page[number]"
+          },
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "exclude_division1_name",
+            "description": "제외할 카테고리 대분류 이름"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "exclude_division2_name",
+            "description": "제외할 카테고리 소분류 이름"
+          }
+        ]
+      },
+      "post": {
+        "summary": "v3 파트너 상품 생성",
+        "operationId": "post-api-v3-partners-products",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_response_success_simple"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "$ref": "#/components/schemas/response_partner_product"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "status": {
+                        "status": "success"
+                      },
+                      "data": {
+                        "payload": {
+                          "id": 0,
+                          "name": "string",
+                          "status": "sale_wait",
+                          "status_text": "string",
+                          "gender": "both",
+                          "category": {
+                            "id": 0,
+                            "gender": "both",
+                            "division1": "string",
+                            "division2": "string"
+                          },
+                          "price": 0,
+                          "discount_price": 0,
+                          "event_price": 0,
+                          "is_on_event_sale": true,
+                          "provider_note": "string",
+                          "images": {
+                            "main": [
+                              "string"
+                            ],
+                            "detail": [
+                              "string"
+                            ]
+                          },
+                          "stock_count": 0,
+                          "option_info": {
+                            "type": "single",
+                            "names": [
+                              "string"
+                            ],
+                            "contents": {},
+                            "data": [
+                              {
+                                "id": 0,
+                                "positions": [
+                                  "string"
+                                ],
+                                "stock": 0,
+                                "option_price": 0,
+                                "is_show": true
+                              }
+                            ]
+                          },
+                          "notice": "string",
+                          "html": "string",
+                          "display_info": [
+                            [
+                              "string"
+                            ]
+                          ],
+                          "virtual_brand_id": 0,
+                          "virtual_brand_name": "string",
+                          "crema_product_code": "string",
+                          "matching_products": [
+                            {
+                              "id": 0,
+                              "name": "string",
+                              "status": "sale_wait",
+                              "status_text": "string",
+                              "gender": "both",
+                              "category": {
+                                "id": 0,
+                                "gender": "both",
+                                "division1": "string",
+                                "division2": "string"
+                              },
+                              "price": 0,
+                              "discount_price": 0,
+                              "images": {
+                                "main": [
+                                  "string"
+                                ],
+                                "detail": [
+                                  "string"
+                                ]
+                              }
+                            }
+                          ],
+                          "\brequire_pccc": true
+                        },
+                        "meta": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 파트너 상품을 생성하는 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "상품 이름"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/V3_model_Enum_product_status"
+                  },
+                  "division1": {
+                    "type": "string",
+                    "description": "카테고리 대분류"
+                  },
+                  "division2": {
+                    "type": "string",
+                    "description": "카테고리 소분류"
+                  },
+                  "price": {
+                    "type": "integer",
+                    "description": "정상 가격"
+                  },
+                  "discount_price": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "할인 가격"
+                  },
+                  "images": {
+                    "type": "array",
+                    "description": "메인 이미지 목록",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "notice": {
+                    "type": "string",
+                    "description": "공지사항"
+                  },
+                  "html": {
+                    "type": "string",
+                    "description": "HTML"
+                  },
+                  "gender": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "성별",
+                    "enum": [
+                      "men",
+                      "women",
+                      "both"
+                    ]
+                  },
+                  "option_info": {
+                    "type": "object",
+                    "description": "옵션 정보",
+                    "properties": {
+                      "names": {
+                        "type": "array",
+                        "description": "옵션 이름(유형) 목록\n\nsample : [\"색상\",\"사이즈\"]",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "data": {
+                        "type": "array",
+                        "description": "옵션 목록",
+                        "items": {
+                          "type": "object",
+                          "description": "옵션 정보",
+                          "properties": {
+                            "positions": {
+                              "type": "array",
+                              "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "stock": {
+                              "type": "integer",
+                              "description": "재고 수량"
+                            },
+                            "option_price": {
+                              "type": "integer",
+                              "description": "옵션 가격"
+                            },
+                            "is_show": {
+                              "type": "boolean",
+                              "description": "노출 여부"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "display_info": {
+                    "type": "array",
+                    "description": "상품정보고시 정보\n** 2중 배열 형태로 되어있다.\n\n[\n   [\"업체명\", \"테스트\"],\n   [\"운영시간\", \"오전6시 ~ 오후9시\"],\n   ....\n]",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "virtual_brand_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "가상 브랜드 이름"
+                  },
+                  "crema_product_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "크리마 상품코드"
+                  },
+                  "matching_product_ids": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "description": "같이 어울리는 상품 식별자 목록",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "require_pccc": {
+                    "type": "boolean",
+                    "description": "개인통관고유부호 요구여부"
+                  }
+                }
+              },
+              "examples": {}
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/api/v3/partners/products/stocks": {
+      "get": {
+        "summary": "v3 파트너 상품별 재고 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "{product_id: 요청한 상품 식별자가 키}": {
+                              "type": "integer",
+                              "description": "요청한 상품 식별자 개수만큼 생깁니다."
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v3-partners-products-stocks",
+        "description": "v3 파트너 상품별 재고를 조회하는 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "store_id",
+            "description": "스토어 식별자 ( admin 인 경우 전달)"
+          },
+          {
+            "schema": {
+              "type": "array"
+            },
+            "in": "query",
+            "name": "product_ids",
+            "description": " 상품 식별자 목록",
+            "required": true
+          }
+        ]
+      },
+      "put": {
+        "summary": "v3 파트너 상품 재고수량 일괄수정",
+        "operationId": "put-api-v1-partners-products-stocks",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "200": {
+                    "value": {
+                      "status": "string",
+                      "data": {
+                        "payload": {},
+                        "meta": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "400": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "401": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "403": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 파트너 상품 재고수량 일괄수정 api endpoint.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "option_info_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "product_id": {
+                          "type": "integer",
+                          "description": "상품 식별자"
+                        },
+                        "product_option_id": {
+                          "type": "integer",
+                          "description": "상품 옵션 식별자"
+                        },
+                        "stock_count": {
+                          "type": "integer",
+                          "description": "변경 갯수"
+                        }
+                      },
+                      "required": [
+                        "product_id",
+                        "product_option_id",
+                        "stock_count"
+                      ]
+                    }
+                  }
+                }
+              },
+              "examples": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      }
+    },
+    "/api/v3/partners/products/{productId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer"
+          },
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "description": "상품 식별자"
+        }
+      ],
+      "get": {
+        "summary": "v3 파트너 상품 상세 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_response_success_simple"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "$ref": "#/components/schemas/response_partner_product"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v3-partners-products-productId",
+        "description": "v3 파트너 상품 상세 조회 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "description": "스토어 식별자 ( admin 인 경우 전달)",
+            "name": "store_id"
+          }
+        ]
+      },
+      "put": {
+        "summary": "v3 파트너 상품 수정",
+        "operationId": "put-api-v3-partners-products-productId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_response_success_simple"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "$ref": "#/components/schemas/response_partner_product"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 파트너 상품을 수정하는 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "상품 이름"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/V3_model_Enum_product_status"
+                  },
+                  "division1": {
+                    "type": "string",
+                    "description": "카테고리 대분류"
+                  },
+                  "division2": {
+                    "type": "string",
+                    "description": "카테고리 소분류"
+                  },
+                  "price": {
+                    "type": "integer",
+                    "description": "정상 가격"
+                  },
+                  "discount_price": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "할인 가격"
+                  },
+                  "images": {
+                    "type": "array",
+                    "description": "메인 이미지 목록",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "notice": {
+                    "type": "string",
+                    "description": "공지사항"
+                  },
+                  "html": {
+                    "type": "string",
+                    "description": "HTML"
+                  },
+                  "gender": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "성별",
+                    "enum": [
+                      "men",
+                      "women",
+                      "both"
+                    ]
+                  },
+                  "option_info": {
+                    "type": "object",
+                    "description": "옵션 정보",
+                    "properties": {
+                      "names": {
+                        "type": "array",
+                        "description": "옵션 이름(유형) 목록\n\nsample : [\"색상\",\"사이즈\"]",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "data": {
+                        "type": "array",
+                        "description": "옵션 목록",
+                        "items": {
+                          "type": "object",
+                          "description": "옵션 정보",
+                          "properties": {
+                            "positions": {
+                              "type": "array",
+                              "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "stock": {
+                              "type": "integer",
+                              "description": "재고 수량"
+                            },
+                            "option_price": {
+                              "type": "integer",
+                              "description": "옵션 가격"
+                            },
+                            "is_show": {
+                              "type": "boolean",
+                              "description": "노출 여부"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "display_info": {
+                    "type": "array",
+                    "description": "상품정보고시 정보\n** 2중 배열 형태로 되어있다.\n\n[\n   [\"업체명\", \"테스트\"],\n   [\"운영시간\", \"오전6시 ~ 오후9시\"],\n   ....\n]",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "virtual_brand_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "가상 브랜드 이름"
+                  },
+                  "crema_product_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "크리마 상품코드"
+                  },
+                  "matching_product_ids": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "description": "같이 어울리는 상품 식별자 목록",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "require_pccc": {
+                    "type": "boolean",
+                    "description": "개인통관고유부호 요구여부"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/api/v3/partners/products/summary": {
+      "get": {
+        "summary": "v3 파트너 상품 요약 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_model_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "sale_wait": {
+                              "type": "integer",
+                              "description": "판매 대기 수"
+                            },
+                            "sale": {
+                              "type": "integer",
+                              "description": "판매 수"
+                            },
+                            "sale_stop": {
+                              "type": "integer",
+                              "description": "판매 중지 수"
+                            },
+                            "sold_out": {
+                              "type": "integer",
+                              "description": "품절 수"
+                            },
+                            "total_count": {
+                              "type": "integer",
+                              "description": "총 수"
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V3_model_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v3-partners-products-summary",
+        "description": "v3 파트너 상품 요약 조회 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      }
+    },
+    "/api/v3/partners/products/validate-crema-code": {
+      "post": {
+        "summary": "v3 파트너 크리마 상품코드 검증",
+        "operationId": "post-api-v3-partners-products-validate-crema-code",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "크리마 연동이 되지 않았습니다.": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "크리마 연동이 되지 않았습니다."
+                    }
+                  },
+                  "'크리마 상품번호가 {다른상품이름}'과 이미 연동되어 있습니다.": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "'크리마 상품번호가 {다른상품이름}'과 이미 연동되어 있습니다. 연동하시려면 '{다른상품이름}' 상품에서 연동을 해제해주세요"
+                    }
+                  },
+                  "크리마에 연동된 리뷰가 없습니다.": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "크리마에 연동된 리뷰가 없습니다. 나중에 다시 시도해주세요."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V1_response_error_500"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "status": "string",
+                      "message": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 파트너 크리마 상품코드 검증 api endpoint.\n\n\b* 검증 실패 메세지는 응답 400의 Example에서 확인 필요",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "crema_product_code": {
+                    "type": "string",
+                    "description": "크리마 상품코드"
+                  },
+                  "product_id": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "상품 식별자"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "response_partner_product": {
+        "title": "response_partner_product",
+        "type": "object",
+        "description": "파트너 상품 응답 모델",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "상품 식별자"
+          },
+          "name": {
+            "type": "string",
+            "description": "상품 이름"
+          },
+          "status": {
+            "$ref": "#/components/schemas/V3_model_Enum_product_status"
+          },
+          "status_text": {
+            "type": "string",
+            "description": "상품 상태 텍스트"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/V3_model_Enum_gender_id"
+          },
+          "category": {
+            "type": "object",
+            "description": "카테고리 정보",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "카테고리 식별자"
+              },
+              "gender": {
+                "$ref": "#/components/schemas/V3_model_Enum_gender_id"
+              },
+              "division1": {
+                "type": "string",
+                "description": "카테고리 대분류 이름"
+              },
+              "division2": {
+                "type": "string",
+                "description": "카테고리 소분류 이름"
+              }
+            }
+          },
+          "price": {
+            "type": "integer",
+            "description": "정상가격"
+          },
+          "discount_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "할인 가격"
+          },
+          "event_price": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "이벤트 가격"
+          },
+          "is_on_event_sale": {
+            "type": "boolean",
+            "description": "세일중 여부"
+          },
+          "provider_note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "판매자 노트"
+          },
+          "images": {
+            "type": "object",
+            "description": "사진 Url 목록",
+            "properties": {
+              "main": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "detail": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "stock_count": {
+            "type": "integer",
+            "description": "재고 수량"
+          },
+          "option_info": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "옵션정보",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "옵션 타입",
+                "enum": [
+                  "single",
+                  "multiple"
+                ]
+              },
+              "names": {
+                "type": "array",
+                "description": "옵션 이름(유형) 목록\n\nsample : [\"색상\",\"사이즈\"]",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "contents": {
+                "type": "object",
+                "description": "옵션 항목 목록\n\nsample : [[\"데님(착용)\"],\"S(28)\",\"M(30)\",\"L(32)\",\"XL(34)\"]]"
+              },
+              "data": {
+                "type": "array",
+                "description": "옵션 목록",
+                "items": {
+                  "type": "object",
+                  "description": "옵션",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "옵션 식별자"
+                    },
+                    "positions": {
+                      "type": "array",
+                      "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "stock": {
+                      "type": "integer",
+                      "description": "옵션 잔여수량"
+                    },
+                    "option_price": {
+                      "type": "integer",
+                      "description": "옵션 추가 가격"
+                    },
+                    "is_show": {
+                      "type": "boolean",
+                      "description": "노출 여부"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "notice": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "상품 공지사항"
+          },
+          "html": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "상품 상세 HTML"
+          },
+          "display_info": {
+            "description": "상품정보고시 정보\n** 2중 배열 형태로 되어있다.\n\n[\n    [\"업체명\", \"테스트\"],\n    [\"운영시간\", \"오전6시 ~ 오후9시\"],\n    ....\n]",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "virtual_brand_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "가상브랜드 식별자"
+          },
+          "virtual_brand_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "파트너가 입력한 가상브랜드 이름"
+          },
+          "crema_product_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "크리마 상품코드"
+          },
+          "matching_products": {
+            "type": "array",
+            "description": "같이 어울리는 상품 정보 목록",
+            "items": {
+              "type": "object",
+              "description": "같이 어울리는 상품 정보",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "상품 식별자"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "상품 이름"
+                },
+                "status": {
+                  "$ref": "#/components/schemas/V3_model_Enum_product_status"
+                },
+                "status_text": {
+                  "type": "string",
+                  "description": "상품 상태 텍스트"
+                },
+                "gender": {
+                  "$ref": "#/components/schemas/V3_model_Enum_gender_id"
+                },
+                "category": {
+                  "type": "object",
+                  "description": "카테고리 정보",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "카테고리 식별자"
+                    },
+                    "gender": {
+                      "$ref": "#/components/schemas/V3_model_Enum_gender_id"
+                    },
+                    "division1": {
+                      "type": "string",
+                      "description": "카테고리 대분류 이름"
+                    },
+                    "division2": {
+                      "type": "string",
+                      "description": "카테고리 소분류 이름"
+                    }
+                  }
+                },
+                "price": {
+                  "type": "integer",
+                  "description": "정상가격"
+                },
+                "discount_price": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "할인 가격"
+                },
+                "images": {
+                  "type": "object",
+                  "description": "사진 Url 목록",
+                  "properties": {
+                    "main": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "detail": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "\brequire_pccc": {
+            "type": "boolean",
+            "description": "개인통관고유부호 요구여부"
+          }
+        }
+      },
+      "V3_model_Enum_gender_id": {
+        "type": "string",
+        "title": "enum_gender_id",
+        "enum": [
+          "both",
+          "men",
+          "women"
+        ],
+        "description": "성별",
+        "examples": []
+      },
+      "V3_model_Enum_product_status": {
+        "type": "string",
+        "title": "enum_product_status",
+        "description": "상품 판매 상태",
+        "enum": [
+          "sale_wait",
+          "sale",
+          "sold_out",
+          "sale_stop"
+        ]
+      },
+      "V3_model_Reponse_status_success": {
+        "type": "string",
+        "title": "reponse_status_success",
+        "examples": [
+          "success"
+        ],
+        "enum": [
+          "success"
+        ],
+        "description": "성공응답 상태"
+      },
+      "V3_model_Response_meta_empty": {
+        "title": "response_meta_empty",
+        "type": "object",
+        "description": "비어 있는 meta 정보"
+      },
+      "V3_model_Response_meta_page": {
+        "title": "v3_response_list_meta",
+        "type": "object",
+        "examples": [
+          {
+            "current_page": 1,
+            "total_count": 10,
+            "total_pages": 1,
+            "prev_page": null,
+            "next_page": null
+          },
+          {
+            "current_page": 2,
+            "total_count": 10,
+            "total_pages": 3,
+            "prev_page": 1,
+            "next_page": 3
+          }
+        ],
+        "description": "V3 목록 형태의 응답의 메타 데이터 - 페이징 정보",
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "현재 페이지"
+          },
+          "total_count": {
+            "type": "integer",
+            "format": "int64",
+            "description": "전체 결과 개수"
+          },
+          "total_pages": {
+            "type": "integer",
+            "format": "int32",
+            "description": "총 페이지수 (=마지막 페이지 번호)"
+          },
+          "prev_page": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "이전 페이지\n이전 페이지가 없으면 null"
+          },
+          "next_page": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "다음 페이지 \n다음 페이지가 없으면 null"
+          }
+        }
+      },
+      "V1_response_error_500": {
+        "title": "v1_response_error_500",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "상태 (error)"
+          },
+          "message": {
+            "type": "string",
+            "description": "에러 사유"
+          }
+        },
+        "description": "JSend 500 Error"
+      },
+      "V3_response_error_400": {
+        "title": "v3_response_error_400",
+        "type": "object",
+        "description": "V3 400 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "BAD_REQUEST",
+            "message": "잘못된 요청입니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "BAD_REQUEST",
+              "INVALID_PARAMETER"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_401": {
+        "title": "v3_response_error_401",
+        "type": "object",
+        "description": "V3 401 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "UNAUTHORIZED",
+            "message": "인증이 필요합니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "UNAUTHORIZED",
+              "SIGN_IN_SOCIAL_NO_MEMBER",
+              "SIGN_IN_SOCIAL_EXISTS_EMAIL",
+              "SIGN_IN_SOCIAL_INVALID_EMAIL"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_403": {
+        "title": "v3_response_error_403",
+        "type": "object",
+        "description": "V3 403 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "FORBIDDEN",
+            "message": "콘텐츠에 접근할 권한이 없습니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "FORBIDDEN"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_500": {
+        "title": "v3_response_error_500",
+        "type": "object",
+        "description": "V3 500 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "INTERNAL_SERVER_ERROR",
+            "message": "오류가 발생하였습니다."
+          },
+          {
+            "status": "error",
+            "code": "NO_DATA",
+            "message": "데이터가 없습니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "INTERNAL_SERVER_ERROR",
+              "NO_DATA"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_success_simple": {
+        "title": "v3_response_success_simple",
+        "type": "object",
+        "description": "v3 단순 성공 응답 정보",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/V3_model_Reponse_status_success"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "V1_model_Page[size]": {
+        "name": "page[size]",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "페이지 사이즈"
+      },
+      "Header_authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "인증토큰"
+      },
+      "Param_page[number]": {
+        "name": "page[number]",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "default": "1",
+          "minLength": 1
+        },
+        "description": "페이지 번호"
+      }
+    }
+  }
+}

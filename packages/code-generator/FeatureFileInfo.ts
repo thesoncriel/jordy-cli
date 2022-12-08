@@ -1,4 +1,4 @@
-import { toCapitalize } from './utils';
+import { toCapitalize } from '../common';
 import {
   FeatureFileInfoDto,
   FeatureNameInfoDto,
