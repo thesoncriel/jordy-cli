@@ -1,3 +1,6 @@
+import Handlebars from 'handlebars';
+import { COMMON_FEATURE_NAMES } from '../code-generator/constants';
+import { FeatureFileInfoDto } from '../code-generator/types';
 import { CodeFileWriterService } from './CodeFileWriter';
 import {
   TemplateCompiler,
@@ -19,9 +22,15 @@ const {
 } = codeFileWriterFixtures;
 
 function createMockFn() {
+  const helper = vi.fn((value) => {
+    return `${COMMON_FEATURE_NAMES.includes(value) ? '' : 'features/'}${value}`;
+  });
+
+  Handlebars.registerHelper('withFeature', helper);
+
   const compile = vi.fn((async (templateText, data) => {
     return compileTemplate(templateText, data);
-  }) as TemplateCompiler);
+  }) as TemplateCompiler<FeatureFileInfoDto>);
 
   const read = vi.fn((async () => {
     const result = '{{featureName}}.{{firstSubName}}';
@@ -53,20 +62,27 @@ function createMockFn() {
     read,
     write,
     appendLogic,
-    append,
     mkdir,
+    append,
+    helper,
   };
 }
 
 describe('CodeFileWriterService', () => {
+  afterAll(() => {
+    Handlebars.unregisterHelper('withFeature');
+  });
+
   describe('지정된 템플릿 경로로 템플릿을 가져오고 데이터를 삽입할 수 있다.', async () => {
-    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const { read, compile, write, append, appendLogic, mkdir, helper } =
+      createMockFn();
+
     const service = new CodeFileWriterService(
       read,
       compile,
       write,
-      append,
-      mkdir
+      mkdir,
+      append
     );
     const config = getConfig();
     const fileInfo = getFileInfo();
@@ -83,6 +99,7 @@ describe('CodeFileWriterService', () => {
       append.mockClear();
       appendLogic.mockClear();
       mkdir.mockClear();
+      helper.mockClear();
     });
 
     it('만들어진 결과 개수는 설정 정보 개수와 일치한다.', () => {
@@ -109,13 +126,15 @@ describe('CodeFileWriterService', () => {
   });
 
   describe('공용 모듈 경로 예외처리', async () => {
-    const { read, compile, write, append, appendLogic, mkdir } = createMockFn();
+    const { read, compile, write, append, appendLogic, mkdir, helper } =
+      createMockFn();
+
     const service = new CodeFileWriterService(
       read,
       compile,
       write,
-      append,
-      mkdir
+      mkdir,
+      append
     );
     const config = getConfig();
     const fileInfo = getSharedModuleInfo();
@@ -132,6 +151,7 @@ describe('CodeFileWriterService', () => {
       append.mockClear();
       appendLogic.mockClear();
       mkdir.mockClear();
+      helper.mockClear();
     });
 
     it('만들어진 결과 개수는 설정 정보 개수와 일치한다.', () => {
@@ -165,8 +185,8 @@ describe('CodeFileWriterService', () => {
         read,
         compile,
         write,
-        append,
-        mkdir
+        mkdir,
+        append
       );
 
       afterEach(() => {
@@ -207,8 +227,8 @@ describe('CodeFileWriterService', () => {
         read,
         compile,
         write,
-        append,
-        mkdir
+        mkdir,
+        append
       );
 
       afterEach(() => {
@@ -245,8 +265,8 @@ describe('CodeFileWriterService', () => {
       read,
       compile,
       write,
-      append,
-      mkdir
+      mkdir,
+      append
     );
     const fileInfo = getFileInfo();
 
@@ -316,8 +336,8 @@ describe('CodeFileWriterService', () => {
       read,
       compile,
       write,
-      append,
-      mkdir
+      mkdir,
+      append
     );
     const fileInfo = getFileInfo();
 

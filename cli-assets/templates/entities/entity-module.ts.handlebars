@@ -1,0 +1,47 @@
+{{#each imports as | imp |}}
+import {
+  {{#each imp.types}}{{this}},{{/each}}
+} from '{{imp.from}}';
+{{/each}}
+
+{{#each entities as | entity |}}
+{{#if entity.description}}/**
+ * @description
+ * {{entity.description}}{{#if (isUnion entity.type)}}
+{{#each entity.properties as | property |}} * - {{property.name}} : {{property.description}}
+{{/each}}{{/if}}
+ */{{/if}}
+{{#if (isEnum entity.type)}}
+export enum {{entity.name}} {
+  {{#each entity.properties as | property |}}
+  {{#if property.description}}/**
+   * @description
+   * {{property.description}}
+   */{{/if}}
+  {{toUpperCase property.name}} = '{{property.name}}',
+  {{/each}}
+}
+{{/if}}
+{{#if (isUnion entity.type)}}
+export type {{entity.name}} =
+  {{#each entity.properties as | property |}}
+  {{#if property.description}}/**
+   * @description
+   * {{property.description}}
+   */{{/if}}
+  | '{{property.name}}'
+  {{/each}}
+;
+{{/if}}
+{{#if (isInterface entity.type)}}
+export interface {{entity.name}} {
+  {{#each entity.properties as | property |}}
+  {{#if property.description}}/**
+   * @description
+   * {{property.description}}
+   */{{/if}}
+  {{property.name}}{{#unless property.required}}?{{/unless}}: {{tsType property.type}}{{#if property.nullable}} | null{{/if}};
+  {{/each}}
+}
+{{/if}}
+{{/each}}

@@ -1,11 +1,15 @@
 import { Command } from 'commander';
 import fs from 'fs/promises';
-import { CLI_ASSETS_NAME } from './constants';
-import { createCodeFileWriterService, createFilePathParser } from './factory';
+import { appendLogics } from './code-generator/appendLogics';
+import { createFilePathParser } from './code-generator/factory';
+import './code-generator/handlebarsHelpers';
+import './entity-generator/handlebarsHelpers';
+import { CodeGeneratorComponentsConfigKeyType } from './code-generator';
 import {
-  CodeGeneratorComponentsConfigKeyType,
+  CLI_ASSETS_NAME,
   CodeGeneratorModuleConfigDto,
-} from './types';
+  createCodeFileWriterService,
+} from './common';
 
 async function getDefaultConfig() {
   const jsonConfig = await fs.readFile(
@@ -20,7 +24,7 @@ async function getDefaultConfig() {
 
 export default async function codeGeneratorCLI() {
   const program = new Command();
-  const service = createCodeFileWriterService();
+  const service = createCodeFileWriterService(appendLogics);
   const defConfig = await getDefaultConfig();
 
   program

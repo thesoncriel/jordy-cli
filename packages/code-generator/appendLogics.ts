@@ -1,5 +1,6 @@
-import { AppendLogicDictionaryModel, FeatureFileInfoDto } from './types';
+import { FeatureFileInfoDto } from './types';
 import { difference } from 'lodash-es';
+import { AppendLogicDictionaryModel } from '../common';
 
 function appendWithoutDuplicates(
   prevCode: string,

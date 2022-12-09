@@ -7,19 +7,19 @@
       "files": [
         {
           "fileName": "{{fullName}}.effect.ts",
-          "template": "__defTemplates/store-sub-effect.ts.handlebars"
+          "template": "__defTemplates/stores/store-sub-effect.ts.handlebars"
         },
         {
           "fileName": "{{fullName}}.slice.ts",
-          "template": "__defTemplates/store-sub-slice.ts.handlebars"
+          "template": "__defTemplates/stores/store-sub-slice.ts.handlebars"
         },
         {
           "fileName": "{{fullName}}.selector.ts",
-          "template": "__defTemplates/store-sub-selector.ts.handlebars"
+          "template": "__defTemplates/stores/store-sub-selector.ts.handlebars"
         },
         {
           "fileName": "index.ts",
-          "template": "__defTemplates/store-sub-index.ts.handlebars"
+          "template": "__defTemplates/stores/store-sub-index.ts.handlebars"
         }
       ]
     },
@@ -29,7 +29,7 @@
       "files": [
         {
           "fileName": "index.ts",
-          "template": "__defTemplates/store-index.ts.handlebars",
+          "template": "__defTemplates/stores/store-index.ts.handlebars",
           "appendLogic": "appendWithoutDuplicates"
         }
       ]
@@ -41,7 +41,7 @@
         {
           "excludes": ["common"],
           "fileName": "reducers.ts",
-          "template": "__defTemplates/reducers.ts.handlebars",
+          "template": "__defTemplates/stores/reducers.ts.handlebars",
           "appendLogic": "appendReducers"
         },
         {
@@ -74,7 +74,7 @@
       "files": [
         {
           "fileName": "features/feat-reducers.ts",
-          "template": "__defTemplates/feat-reducers.ts.handlebars",
+          "template": "__defTemplates/stores/feat-reducers.ts.handlebars",
           "appendLogic": "appendReducers"
         }
       ]
@@ -87,7 +87,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.tsx",
-          "template": "__defTemplates/component-normal.tsx.handlebars"
+          "template": "__defTemplates/components/component-normal.tsx.handlebars"
         }
       ]
     },
@@ -97,7 +97,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.tsx",
-          "template": "__defTemplates/component-dialog.tsx.handlebars"
+          "template": "__defTemplates/components/component-dialog.tsx.handlebars"
         }
       ]
     },
@@ -107,7 +107,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.tsx",
-          "template": "__defTemplates/component-imperative.tsx.handlebars"
+          "template": "__defTemplates/components/component-imperative.tsx.handlebars"
         }
       ]
     },
@@ -117,7 +117,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.tsx",
-          "template": "__defTemplates/component-memo.tsx.handlebars"
+          "template": "__defTemplates/components/component-memo.tsx.handlebars"
         }
       ]
     }
@@ -129,7 +129,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
-          "template": "__defTemplates/storybook-normal.stories.tsx.handlebars"
+          "template": "__defTemplates/components/storybook-normal.stories.tsx.handlebars"
         }
       ]
     },
@@ -139,7 +139,7 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
-          "template": "__defTemplates/storybook-dialog.stories.tsx.handlebars"
+          "template": "__defTemplates/components/storybook-dialog.stories.tsx.handlebars"
         }
       ]
     },
@@ -149,9 +149,63 @@
       "files": [
         {
           "fileName": "{{fileNameAsPascalCase}}.stories.tsx",
-          "template": "__defTemplates/storybook-imperative.stories.tsx.handlebars"
+          "template": "__defTemplates/components/storybook-imperative.stories.tsx.handlebars"
         }
       ]
     }
+  },
+  "core": {
+    "basePath": ["/api/v3"],
+    "openApi": {
+      "path": "",
+      "includes": ["./**/v3_*.yaml"]
+    },
+    "openApiFolderPath": "",
+    "entity": {
+      "base": "src/core/entities/{{featureName}}",
+      "files": [
+        {
+          "fileName": "{{fullName}}.entity.ts",
+          "template": "__defTemplates/core/entity-module.ts.handlebars"
+        }
+      ]
+    },
+    "references": {
+      "order_statuses": {
+        "typeName": ""
+      }
+    },
+    "bodySchema": [
+      {
+        "desc": "common response",
+        "typeName": "CommonRes",
+        "import": "@core/entities/common",
+        "rootEntityPath": "data.payload",
+        "pathNeeded": [
+          "status",
+          "data.meta:$ref=meta_empty$"
+        ]
+      },
+      {
+        "desc": "common response (not empty meta data)",
+        "typeName": "CommonRes",
+        "import": "@core/entities/common",
+        "rootEntityPath": "data.payload",
+        "pathNeeded": [
+          "status",
+          "data.meta"
+        ]
+      },
+      {
+        "desc": "pageable response",
+        "typeName": "PagingRes",
+        "import": "@core/entities/common",
+        "rootEntityPath": "data.payload[]",
+        "pathNeeded": [
+          "status",
+          "data.meta:$ref=meta_page$"
+        ]
+      }
+    ]
   }
 }
