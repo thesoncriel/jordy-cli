@@ -1,0 +1,246 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "v3_jordy_test_sample",
+    "version": "3.0",
+    "summary": "v3 죠르디 테스트 api 엔드포인트",
+    "description": "v3 죠르디 테스트 api 엔드포인트"
+  },
+  "paths": {
+    "/some/version3/jordy/testSample/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "샘플번호"
+        }
+      ],
+      "get": {
+        "summary": "version2 죠르디 - 테스트 샘플 조회",
+        "responses": {
+          "200": {
+            "description": "오케이",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "description": "객체 배열 데이터 입니다.",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "description": "이름"
+                                  },
+                                  "age": {
+                                    "type": "integer",
+                                    "description": "나이"
+                                  },
+                                  "from": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "description": "출신"
+                                  },
+                                  "job_status": {
+                                    "$ref": "#/components/schemas/jordy_job_status"
+                                  }
+                                }
+                              }
+                            },
+                            "normal": {
+                              "type": "string",
+                              "description": "죠르디 입니다."
+                            },
+                            "arr_values": {
+                              "type": "array",
+                              "description": "문자열 배열 입니다.",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "obj_value": {
+                              "type": "object",
+                              "description": "객체 입니다.",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "description": "이름"
+                                },
+                                "size": {
+                                  "type": "integer",
+                                  "description": "싸이즈"
+                                },
+                                "blah": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "블라블라"
+                                }
+                              }
+                            },
+                            "enum_value": {
+                              "type": "string",
+                              "description": "소닉 친구들",
+                              "enum": [
+                                "sonic",
+                                "tails",
+                                "knuckles",
+                                "dr.eggman",
+                                "shadow"
+                              ]
+                            },
+                            "enum_array": {
+                              "type": "array",
+                              "description": "여러개 선택",
+                              "enum": [
+                                "바지",
+                                "셔츠",
+                                "맨투맨"
+                              ]
+                            },
+                            "oneOf_value": {
+                              "type": "object",
+                              "description": "둘중 하나입니다.",
+                              "oneOf": [
+                                {
+                                  "description": "one",
+                                  "properties": {
+                                    "value": {
+                                      "type": "string",
+                                      "enum": [
+                                        "하나", "한놈", "일"
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "description": "two",
+                                  "properties": {
+                                    "value": {
+                                      "type": "string",
+                                      "enum": [
+                                        "둘", "두놈", "이"
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "information": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "$ref": "#/components/schemas/jordy_information_code"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "somePattern": {
+                          "$ref": "../../ref_components/schemas/jordy_hi_code.yaml"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "수정수정",
+        "description": "데이터 수정",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "goods_list": {
+                    "type": "array",
+                    "description": "죠르디 굿즈 목록",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "굿즈 번호"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "굿즈 명칭"
+                        },
+                        "alias": {
+                          "type": "string",
+                          "description": "굿즈 별칭"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ]
+                    }
+                  },
+                  "need_hearts": {
+                    "type": "boolean",
+                    "description": "하트 필요여부"
+                  }
+                },
+                "required": [
+                  "goods_list"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "jordy_information_code": {
+        "title": "jordy_goods_info",
+        "type": "object",
+        "description": "말랑말랑 죠르디 ^^",
+        "properties": {
+          "softy": {
+            "type": ["boolean", "null"],
+            "description": "부드러운지 여부"
+          },
+          "fluffy": {
+            "type": ["boolean", "null"],
+            "description": "말랑한지 여부"
+          },
+          "cutty": {
+            "type": ["boolean", "null"],
+            "description": "귀여운지 여부"
+          },
+          "happy": {
+            "type": ["boolean", "null"],
+            "description": "행복한지 여부"
+          }
+        }
+      }
+    }
+  }
+}

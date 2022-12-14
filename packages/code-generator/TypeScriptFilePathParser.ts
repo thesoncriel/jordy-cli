@@ -1,3 +1,4 @@
+import { isString } from '../common';
 import { COMMON_FEATURE_NAMES } from './constants';
 import { FeatureFileInfo } from './FeatureFileInfo';
 import { FeatureNameInfo } from './FeatureNameInfo';
@@ -6,7 +7,6 @@ import {
   FeatureNameInfoDto,
   FilePathParser,
 } from './types';
-import { isString } from './utils';
 
 export class TypeScriptFilePathParser implements FilePathParser {
   static DEFAULT_SUB_NAME = 'basic';

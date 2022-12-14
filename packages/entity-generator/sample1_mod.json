@@ -1,0 +1,3491 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "v2_jordy_order",
+    "version": "1.0",
+    "summary": "v2 죠르디 주문 api 엔드포인트",
+    "description": "v2 죠르디 주문 api 엔드포인트"
+  },
+  "paths": {
+    "/api/v2/jordy/orders/{orderNum}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "orderNum",
+          "in": "path",
+          "required": true,
+          "description": "주문번호"
+        }
+      ],
+      "get": {
+        "summary": "v2 죠르디 - 주문 상세 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "order_num": {
+                              "type": "string",
+                              "description": "주문 식별자 (주문 번호)"
+                            },
+                            "order_payment": {
+                              "type": "object",
+                              "description": "주문 결제 정보",
+                              "properties": {
+                                "total_prev_price": {
+                                  "type": "integer",
+                                  "description": "주문한 상품의 할인전 총 금액 (상품의 할인전 금액 * 수량)"
+                                },
+                                "total_price": {
+                                  "type": "integer",
+                                  "description": "주문 총 금액 (결제 금액 + 쿠폰 할인 금액 + 사용한 포인트)"
+                                },
+                                "paid_price": {
+                                  "type": "integer",
+                                  "description": "결제 금액"
+                                },
+                                "discounted_coupon_price": {
+                                  "type": "integer",
+                                  "description": "쿠폰 할인 금액"
+                                },
+                                "consumed_point": {
+                                  "type": "integer",
+                                  "description": "사용한 포인트"
+                                },
+                                "order_product_count": {
+                                  "type": "integer",
+                                  "description": "주문 상품 개수"
+                                },
+                                "pay_method_text": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "결제 방법"
+                                },
+                                "paid_at": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "date-time",
+                                  "description": "결제일시"
+                                },
+                                "pay_status_text": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "결제 상태"
+                                }
+                              }
+                            },
+                            "order_product_list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/member_order_product_list_payload"
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-orderNum",
+        "description": "v2 죠르디 주문 상세정보를 조회하는 api endpoint\n\n* 쿼리파라미터로 first_order_product_num 를 지정하면 해당 주문상품이 같이 주문한 상품목록에서 가장 첫번째에 위치되어 반환됨.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "first_order_product_num",
+            "description": "첫번째로 노출할 주문상품 식별자 (주문상품 번호)"
+          }
+        ]
+      }
+    },
+    "/api/v2/jordy/orders/goods": {
+      "get": {
+        "summary": "v2 죠르디 - 주문상품 목록 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/member_order_product_list_payload"
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods",
+        "description": "v2 죠르디 주문상품 목록을 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order_nums",
+            "description": "주문번호 목록 (주문 식별자 O, 주문상품 식별자 X)"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pay_wait",
+                "pay_fail",
+                "pay_success",
+                "pay_cancel",
+                "ship_wait",
+                "ship_ing",
+                "ship_done",
+                "cancel_wait",
+                "cancel_soon",
+                "cancel_soon_auto",
+                "cancel_soon_partner",
+                "cancel_done",
+                "cancel_done_auto",
+                "cancel_done_partner",
+                "cancel_cancel",
+                "change_wait",
+                "change_pickup",
+                "change_done",
+                "change_hold",
+                "change_cancel",
+                "re_ship",
+                "refund_wait",
+                "refund_pickup",
+                "refund_soon",
+                "refund_done",
+                "refund_hold",
+                "refund_cancel",
+                "refund_soon_confirm",
+                "refund_done_confirm",
+                "refund_soon_partner",
+                "refund_done_partner",
+                "confirm",
+                "confirm_cancel",
+                "request_refund"
+              ]
+            },
+            "in": "query",
+            "name": "order_statuses",
+            "description": "주문 상태 목록"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "changed_at[gte]",
+            "description": "최근상태변경 시작일"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "changed_at[lte]",
+            "description": "최근상태변경 종료일"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "newest",
+                "oldest",
+                "newest_changed",
+                "oldest_changed",
+                "newest_claim_changed",
+                "oldest_claim_changed"
+              ],
+              "default": "newest"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "정렬기준 (newest: 최근주문상품순, oldest: 이전주문상품순, newest_changed: 최근 상태변경 주문상품순, oldest_changed: 이전 상태변경 주문상품순, newest_claim_changed: 최근 교환/환불/최소 주문상품순, oldest_claim_changed: 이전 교환/환불/최소 주문상품순)"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[number]"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[size]"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pay_filter_group",
+                "ship_wait_filter_group",
+                "ship_ing_filter_group",
+                "ship_done_filter_group",
+                "claim_filter_group"
+              ]
+            },
+            "in": "query",
+            "name": "order_status_group",
+            "description": "주문 상태 그룹"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "only_reviewable",
+            "description": "리뷰작성이 가능한 주문상품만 노출여부"
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/api/v2/jordy/orders/goods/summary": {
+      "get": {
+        "summary": "v2 죠르디 - 주문상품 요약정보 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_response_success_simple"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "latest_filter_group": {
+                              "type": "string",
+                              "enum": [
+                                "pay_filter_group",
+                                "ship_wait_filter_group",
+                                "ship_ing_filter_group",
+                                "ship_done_filter_group",
+                                "claim_filter_group"
+                              ],
+                              "description": "최근 필터 그룹"
+                            },
+                            "pay_filter_group": {
+                              "type": "integer",
+                              "description": "입금/결제 개수"
+                            },
+                            "ship_wait_filter_group": {
+                              "type": "integer",
+                              "description": "배송준비중 개수"
+                            },
+                            "ship_ing_filter_group": {
+                              "type": "integer",
+                              "description": "배송중 개수"
+                            },
+                            "ship_done_filter_group": {
+                              "type": "integer",
+                              "description": "배송완료 개수"
+                            },
+                            "claim_filter_group": {
+                              "type": "integer",
+                              "description": "취소/교환/환불 개수"
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                },
+                "examples": {
+                  "BAD_REQUEST": {
+                    "value": {
+                      "status": "error",
+                      "code": "BAD_REQUEST",
+                      "message": "잘못된 요청입니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-summary",
+        "description": "v2 죠르디 주문상품 요약정보를 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "changed_at[gte]",
+            "description": "최근상태변경 시작일"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "changed_at[lte]",
+            "description": "최근상태변경 종료일"
+          }
+        ]
+      }
+    },
+    "/api/v2/jordy/orders/goods/reviews": {
+      "get": {
+        "summary": "v2 죠르디 주문상품 리뷰 목록 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "주문상품 리뷰 식별자"
+                            },
+                            "type": {
+                              "type": "object",
+                              "description": "주문상품 리뷰 타입 별 작성여부",
+                              "properties": {
+                                "simple": {
+                                  "type": "boolean"
+                                },
+                                "content": {
+                                  "type": "boolean"
+                                },
+                                "photo": {
+                                  "type": "boolean"
+                                }
+                              }
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "description": "주문상품 리뷰 작성일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "description": "주문상품 리뷰 수정일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "satisfaction": {
+                              "type": "number",
+                              "description": "주문상품 리뷰 별점"
+                            },
+                            "content": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "주문상품 일반 리뷰 내용"
+                            },
+                            "images": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "description": "주문상품 사진 리뷰 리사이징 이미지목록",
+                              "properties": {
+                                "resized": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "300": {
+                                        "type": "string"
+                                      },
+                                      "450": {
+                                        "type": "string"
+                                      },
+                                      "900": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "images_count": {
+                              "type": "integer",
+                              "description": "주문상품 사진 리뷰 이미지 개수"
+                            },
+                            "like_count": {
+                              "type": "integer",
+                              "description": "주문상품 리뷰 좋아요 수"
+                            },
+                            "photo_urls": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "description": "주문상품 사진 리뷰 이미지목록",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "size": {
+                              "type": "string",
+                              "description": "주문상품 리뷰 사이즈 응답"
+                            },
+                            "color": {
+                              "type": "string",
+                              "description": "주문상품 리뷰 색상 응답"
+                            },
+                            "shipping": {
+                              "type": "string",
+                              "description": "주문상품 리뷰 배송 응답"
+                            },
+                            "order_product": {
+                              "type": "object",
+                              "description": "주문 상품 정보",
+                              "properties": {
+                                "order_product_num": {
+                                  "type": "string",
+                                  "description": "주문상품 번호 (주문상품 식별자)"
+                                },
+                                "order_num": {
+                                  "type": "string",
+                                  "description": "주문 번호 (주문 식별자)"
+                                },
+                                "option": {
+                                  "type": "object",
+                                  "description": "주문상품 선택 옵션 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "옵션 식별자"
+                                    },
+                                    "positions": {
+                                      "type": "array",
+                                      "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "option_price": {
+                                      "type": "integer",
+                                      "description": "옵션 가격"
+                                    },
+                                    "selected_count": {
+                                      "type": "integer",
+                                      "description": "선택 수량"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "product": {
+                              "type": "object",
+                              "description": "주문상품 상품 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "상품 이름"
+                                },
+                                "status": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_product_status"
+                                },
+                                "images": {
+                                  "type": "object",
+                                  "description": "사진 Url 목록",
+                                  "properties": {
+                                    "main": {
+                                      "type": [
+                                        "array",
+                                        "null"
+                                      ],
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "detail": {
+                                      "type": [
+                                        "array",
+                                        "null"
+                                      ],
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                },
+                                "store": {
+                                  "type": "object",
+                                  "description": "스토어 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "스토어 식별자"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "스토어 이름"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "userable_info": {
+                              "type": "object",
+                              "description": "사용자 사이즈 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "사용자 사이즈 정보 식별자",
+                                  "format": "int32"
+                                },
+                                "age": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "format": "int32",
+                                  "description": "나이"
+                                },
+                                "sizes": {
+                                  "type": [
+                                    "object",
+                                    "null"
+                                  ],
+                                  "description": "사이즈 정보",
+                                  "properties": {
+                                    "상의": {
+                                      "type": "string"
+                                    },
+                                    "하의": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "height": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "format": "int32",
+                                  "description": "키"
+                                },
+                                "weight": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "format": "int32",
+                                  "description": "몸무게"
+                                },
+                                "gender_id": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_gender_id"
+                                },
+                                "created_at": {
+                                  "$ref": "#/components/schemas/V2_jordy_Created_at"
+                                },
+                                "updated_at": {
+                                  "$ref": "#/components/schemas/V2_jordy_Updated_at"
+                                },
+                                "userable_type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Member",
+                                    "User"
+                                  ],
+                                  "description": "사용자 사이즈정보 유형\nMember - 회원\nUser - 비회원"
+                                },
+                                "store_group_id": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_store_group_id"
+                                }
+                              }
+                            },
+                            "member": {
+                              "type": "object",
+                              "description": "회원 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "회원 식별자"
+                                },
+                                "email_masked": {
+                                  "type": "string",
+                                  "description": "마스킹된 회원 이메일"
+                                },
+                                "level": {
+                                  "type": "integer",
+                                  "description": "회원 레벨"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-reviews",
+        "description": "v2 죠르디 주문상품 리뷰 목록을 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[number]"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[size]"
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/api/v2/jordy/orders/goods/contacts": {
+      "get": {
+        "summary": "v2 죠르디 주문상품 문의 목록 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "주문상품 문의 식별자"
+                            },
+                            "typeof": {
+                              "type": "string",
+                              "description": "주문상품 문의 타입"
+                            },
+                            "contents": {
+                              "type": "string",
+                              "description": "주문상품 문의 내용"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "description": "주문상품 문의 작성일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "description": "주문상품 문의 수정일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "order_product": {
+                              "type": "object",
+                              "description": "주문 상품 정보",
+                              "properties": {
+                                "order_product_num": {
+                                  "type": "string",
+                                  "description": "주문상품 번호 (주문상품 식별자)"
+                                },
+                                "order_num": {
+                                  "type": "string",
+                                  "description": "주문 번호 (주문 식별자)"
+                                },
+                                "option": {
+                                  "type": "object",
+                                  "description": "주문상품 선택 옵션 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "옵션 식별자"
+                                    },
+                                    "positions": {
+                                      "type": "array",
+                                      "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "option_price": {
+                                      "type": "integer",
+                                      "description": "옵션 가격"
+                                    },
+                                    "selected_count": {
+                                      "type": "integer",
+                                      "description": "선택 수량"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "product": {
+                              "type": "object",
+                              "description": "주문상품 상품 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "상품 이름"
+                                },
+                                "status": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_product_status"
+                                },
+                                "images": {
+                                  "type": "array",
+                                  "description": "사진 Url 목록",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "store": {
+                                  "type": "object",
+                                  "description": "스토어 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "스토어 식별자"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "스토어 이름"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "response": {
+                              "type": "object",
+                              "description": "주문상품 문의 답변 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "주문상품 문의 답변 식별자"
+                                },
+                                "contents": {
+                                  "type": "string",
+                                  "description": "주문상품 문의 답변 내용"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "example": "2021-08-13T12:30:11.793+09:00",
+                                  "description": "주문상품 문의 답변 작성일"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "example": "2021-08-13T12:30:11.793+09:00",
+                                  "description": "주문상품 문의 답변 수정일"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_page"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-contacts",
+        "description": "v2 죠르디 주문상품 문의 목록을 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[number]"
+          },
+          {
+            "$ref": "#/components/parameters/V1_model_Page[size]"
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/api/v2/jordy/orders/goods/contacts/{order_product_contact_id}": {
+      "get": {
+        "summary": "v2 죠르디 주문상품 문의 상세 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "주문상품 문의 식별자"
+                            },
+                            "typeof": {
+                              "type": "string",
+                              "description": "주문상품 문의 타입"
+                            },
+                            "contents": {
+                              "type": "string",
+                              "description": "주문상품 문의 내용"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "description": "주문상품 문의 작성일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "description": "주문상품 문의 수정일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "order_product": {
+                              "type": "object",
+                              "description": "주문 상품 정보",
+                              "properties": {
+                                "order_product_num": {
+                                  "type": "string",
+                                  "description": "주문상품 번호 (주문상품 식별자)"
+                                },
+                                "order_num": {
+                                  "type": "string",
+                                  "description": "주문 번호 (주문 식별자)"
+                                },
+                                "option": {
+                                  "type": "object",
+                                  "description": "주문상품 선택 옵션 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "옵션 식별자"
+                                    },
+                                    "positions": {
+                                      "type": "array",
+                                      "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "option_price": {
+                                      "type": "integer",
+                                      "description": "옵션 가격"
+                                    },
+                                    "selected_count": {
+                                      "type": "integer",
+                                      "description": "선택 수량"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "product": {
+                              "type": "object",
+                              "description": "주문상품 상품 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "상품 이름"
+                                },
+                                "status": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_product_status"
+                                },
+                                "images": {
+                                  "type": "array",
+                                  "description": "사진 Url 목록",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "store": {
+                                  "type": "object",
+                                  "description": "스토어 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "스토어 식별자"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "스토어 이름"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "response": {
+                              "type": "object",
+                              "description": "주문상품 문의 답변 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "주문상품 문의 답변 식별자"
+                                },
+                                "contents": {
+                                  "type": "string",
+                                  "description": "주문상품 문의 답변 내용"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "example": "2021-08-13T12:30:11.793+09:00",
+                                  "description": "주문상품 문의 답변 작성일"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "description": "주문상품 문의 답변 수정일",
+                                  "example": "2021-08-13T12:30:11.793+09:00"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-contacts",
+        "description": "v2 죠르디 주문상품 문의 상세를 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "order_product_contact_id",
+          "in": "path",
+          "required": true,
+          "description": "주문상품 문의 식별자"
+        }
+      ]
+    },
+    "/api/v2/jordy/goods/questions/{goods_question_id}": {
+      "get": {
+        "summary": "v2 죠르디 상품 문의 상세 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "상품 문의 식별자"
+                            },
+                            "typeof": {
+                              "type": "string",
+                              "description": "상품 문의 타입"
+                            },
+                            "contents": {
+                              "type": "string",
+                              "description": "상품 문의 내용"
+                            },
+                            "created_at": {
+                              "type": "string",
+                              "description": "상품 문의 작성일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "description": "상품 문의 수정일",
+                              "example": "2021-08-13T12:30:11.793+09:00"
+                            },
+                            "hidden": {
+                              "type": "boolean",
+                              "description": "문의 비공개 여부"
+                            },
+                            "product": {
+                              "type": "object",
+                              "description": "상품 상품 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "상품 이름"
+                                },
+                                "status": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_product_status"
+                                },
+                                "images": {
+                                  "type": "array",
+                                  "description": "사진 Url 목록",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "store": {
+                                  "type": "object",
+                                  "description": "스토어 정보",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer",
+                                      "description": "스토어 식별자"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "description": "스토어 이름"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "answer": {
+                              "type": "object",
+                              "description": "상품 문의 답변 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 문의 답변 식별자"
+                                },
+                                "contents": {
+                                  "type": "string",
+                                  "description": "상품 문의 답변 내용"
+                                },
+                                "created_at": {
+                                  "type": "string",
+                                  "example": "2021-08-13T12:30:11.793+09:00",
+                                  "description": "상품 문의 답변 작성일"
+                                },
+                                "updated_at": {
+                                  "type": "string",
+                                  "description": "상품 문의 답변 수정일",
+                                  "example": "2021-08-13T12:30:11.793+09:00"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-goods-questions",
+        "description": "v2 죠르디 상품 문의 상세를 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "goods_question_id",
+          "in": "path",
+          "required": true,
+          "description": "상품 문의 식별자"
+        }
+      ]
+    },
+    "/api/v2/jordy/orders/pay_methods": {
+      "get": {
+        "summary": "v2 죠르디 - 결제 방법 목록 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V3_response_success_simple"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "text": {
+                                "type": "string",
+                                "description": "결제방법 텍스트"
+                              },
+                              "code": {
+                                "type": "string",
+                                "description": "결제방법 코드"
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "value": {
+                      "status": "error",
+                      "code": "UNAUTHORIZED",
+                      "message": "인증이 필요합니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                },
+                "examples": {
+                  "FORBIDDEN": {
+                    "value": {
+                      "status": "error",
+                      "code": "FORBIDDEN",
+                      "message": "콘텐츠에 접근할 권한이 없습니다."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                },
+                "examples": {
+                  "INTERNAL_SERVER_ERROR": {
+                    "value": {
+                      "status": "error",
+                      "code": "INTERNAL_SERVER_ERROR",
+                      "message": "오류가 발생하였습니다."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-pay_methods",
+        "description": "v3 결제 방법 목록을 조회하는 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      }
+    },
+    "/api/v2/jordy/orders/prepare": {
+      "post": {
+        "summary": "v2 죠르디 - 주문페이지 오픈 전 체크",
+        "operationId": "post-api-v2-jordy-orders-prepare",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "auto_applied_discount_coupon": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "description": "자동적용할 할인쿠폰 및 옵션목록 정보",
+                              "properties": {
+                                "issued_discount_coupon_id": {
+                                  "type": "number",
+                                  "description": "자동적용할 발급된 할인쿠폰 식별자"
+                                },
+                                "option_ids": {
+                                  "type": "array",
+                                  "description": "자동적용할 옵션식별자 목록",
+                                  "items": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            },
+                            "require_pccc_option_ids": {
+                              "type": "array",
+                              "description": "개인통관고유부호가 요구되는 option ID 목록",
+                              "items": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 주문페이지 오픈 전 체크하는 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order_product_list": {
+                    "type": "array",
+                    "description": "선택된 상품옵션 목록",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "option_id": {
+                          "type": "integer",
+                          "description": "선택된 상품옵션 식별자"
+                        },
+                        "count": {
+                          "type": "integer",
+                          "description": "수량"
+                        }
+                      },
+                      "required": [
+                        "option_id",
+                        "count"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "order_product_list"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/jordy/orders": {
+      "post": {
+        "summary": "v2 죠르디 - 주문 생성",
+        "operationId": "post-api-v2-jordy-orders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "주문 생성 응답",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "description": "결제창 호출 URL"
+                            },
+                            "payment_object": {
+                              "type": "object",
+                              "description": "결제창 호출 정보",
+                              "properties": {
+                                "pg": {
+                                  "type": "string",
+                                  "description": "결제 provider"
+                                },
+                                "identification_code": {
+                                  "type": "string",
+                                  "description": "결제 식별 코드"
+                                },
+                                "pay_method": {
+                                  "$ref": "#/components/schemas/V2_jordy_Enum_payment_method"
+                                },
+                                "merchant_uid": {
+                                  "type": "number",
+                                  "description": "주문 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "결제 이름"
+                                },
+                                "amount": {
+                                  "type": "integer",
+                                  "description": "결제 가격"
+                                },
+                                "buyer_email": {
+                                  "type": "string",
+                                  "description": "구매자 이메일"
+                                },
+                                "buyer_name": {
+                                  "type": "string",
+                                  "description": "구매자 이름"
+                                },
+                                "buyer_tel": {
+                                  "type": "string",
+                                  "description": "구매자 연락처"
+                                },
+                                "buyer_addr": {
+                                  "type": "string",
+                                  "description": "구매자 주소"
+                                },
+                                "app_scheme": {
+                                  "type": "string",
+                                  "description": "App Scheme"
+                                },
+                                "redirect_url": {
+                                  "type": "string",
+                                  "description": "(m-Web) 결제 redirect URL"
+                                },
+                                "notice_url": {
+                                  "type": "string",
+                                  "description": "결제 결과 통보 URL"
+                                },
+                                "digital": {
+                                  "type": [
+                                    "boolean",
+                                    "null"
+                                  ],
+                                  "description": "휴대폰결제 요청 시 필요값"
+                                },
+                                "naverpay_info": {
+                                  "type": [
+                                    "object",
+                                    "null"
+                                  ],
+                                  "description": "naverpay 결제 시 정보들",
+                                  "properties": {
+                                    "is_v2": {
+                                      "type": "boolean",
+                                      "description": "v2 여부"
+                                    },
+                                    "popup_mode": {
+                                      "type": "boolean",
+                                      "description": "결제창 팝업여부"
+                                    },
+                                    "goods": {
+                                      "type": "array",
+                                      "description": "상품정보 목록",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "id": {
+                                            "type": "string",
+                                            "description": "상품 식별자"
+                                          },
+                                          "category_type": {
+                                            "type": "string",
+                                            "description": "카테고리 타입"
+                                          },
+                                          "category_id": {
+                                            "type": "string",
+                                            "description": "카테고리 식별자"
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                            "description": "상품 이름"
+                                          },
+                                          "count": {
+                                            "type": [
+                                              "string",
+                                              "integer"
+                                            ],
+                                            "description": "구매 개수"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "v3 주문 생성 api endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "$ref": "#/components/parameters/Header_platform"
+          },
+          {
+            "$ref": "#/components/parameters/Header_context_source"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shipping_info": {
+                    "type": "object",
+                    "description": "배송지 정보",
+                    "properties": {
+                      "shipping_info_id": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "description": "배송지 식별자"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "수신인 이름"
+                      },
+                      "phone_number": {
+                        "type": "string",
+                        "description": "연락처 ( '-' 을 제외한 숫자만 )"
+                      },
+                      "address": {
+                        "type": "object",
+                        "description": "주소정보",
+                        "properties": {
+                          "main": {
+                            "type": "string",
+                            "description": "주소"
+                          },
+                          "detail": {
+                            "type": "string",
+                            "description": "상세 주소"
+                          },
+                          "zipcode": {
+                            "type": "string",
+                            "description": "우편번호"
+                          }
+                        }
+                      },
+                      "message": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "배송요청사항"
+                      },
+                      "info_alias": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "배송지 별칭"
+                      },
+                      "pccc": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "description": "개인통관고유부호"
+                      }
+                    }
+                  },
+                  "options": {
+                    "type": "array",
+                    "description": "주문 상품옵션 정보 목록",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "option_id": {
+                          "type": "integer",
+                          "description": "상품옵션 식별자"
+                        },
+                        "count": {
+                          "type": "integer",
+                          "description": "상품옵션 개수"
+                        },
+                        "issued_discount_coupon_id": {
+                          "type": [
+                            "number",
+                            "null"
+                          ],
+                          "description": "사용할 발급받은 할인쿠폰 식별자"
+                        },
+                        "product_context": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "상품이 담긴 위치 (ranking, search etc.)"
+                        }
+                      }
+                    }
+                  },
+                  "pay_method": {
+                    "$ref": "#/components/schemas/V2_jordy_Enum_payment_method"
+                  },
+                  "consume_point": {
+                    "type": "integer",
+                    "description": "사용할 적립금"
+                  },
+                  "is_pc_web": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "PC-Web 플랫폼 여부"
+                  },
+                  "total_paid_price": {
+                    "type": "integer",
+                    "description": "검증용 총 결제금액"
+                  },
+                  "order_context": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "주문 진입 경로 (pin, cart, product_detail, etc.)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/jordy/orders/goods/reviews/guide-info": {
+      "get": {
+        "summary": "v2 죠르디 주문상품 리뷰 작성을 위한 정보 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "주문상품 리뷰 작성을 위한 정보 응답",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "member_sizes": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "description": "회원 신체정보",
+                              "properties": {
+                                "height": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "description": "키"
+                                },
+                                "weight": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "description": "몸무게"
+                                },
+                                "sizes": {
+                                  "type": [
+                                    "object",
+                                    "null"
+                                  ],
+                                  "description": "기타 사이즈정보",
+                                  "properties": {
+                                    "상의": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "하의": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "신발": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "questions": {
+                              "type": "array",
+                              "description": "리뷰 질문 목록",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "description": "질문 제목"
+                                  },
+                                  "code": {
+                                    "type": "string",
+                                    "description": "질문 코드"
+                                  },
+                                  "answers": {
+                                    "type": "array",
+                                    "description": "답변 목록",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "title": {
+                                          "type": "string",
+                                          "description": "답변 표기명"
+                                        },
+                                        "value": {
+                                          "type": "integer",
+                                          "description": "답변 값"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "guide_texts": {
+                              "type": "array",
+                              "description": "가이드문구 목록",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "require_member_size": {
+                              "type": "boolean",
+                              "description": "신체정보 수집여부"
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-reviews-guide-info",
+        "description": "v2 죠르디 주문상품 리뷰 작성을 위한 정보 조회 api endpoint",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order_product_num",
+            "description": "주문상품번호",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/api/v2/jordy/orders/goods/{orderProductNum}/tracking": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "orderProductNum",
+          "in": "path",
+          "required": true,
+          "description": "주문상품번호"
+        }
+      ],
+      "get": {
+        "summary": "v2 죠르디 주문상품 배송추적 정보 조회",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "product": {
+                              "type": "object",
+                              "description": "상품 정보",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "상품 식별자"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "상품 이름"
+                                },
+                                "price": {
+                                  "type": "integer",
+                                  "description": "상품 정상가"
+                                },
+                                "discount_price": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "description": "상품 할인가"
+                                },
+                                "event_price": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ],
+                                  "description": "상품 이벤트가"
+                                },
+                                "final_price": {
+                                  "type": "integer",
+                                  "description": "상품 판매가(최종)"
+                                },
+                                "gender_id": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "enum": [
+                                    "men",
+                                    "women",
+                                    "both"
+                                  ],
+                                  "description": "상품 성별"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "sale",
+                                    "sale_stop",
+                                    "sale_wait",
+                                    "sold_out"
+                                  ],
+                                  "description": "상품 판매 상태"
+                                },
+                                "image": {
+                                  "type": "string",
+                                  "description": "상품 대표 이미지"
+                                }
+                              }
+                            },
+                            "product_option": {
+                              "type": "object",
+                              "description": "상품 옵션",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "description": "옵션 식별자"
+                                },
+                                "data": {
+                                  "type": "object",
+                                  "description": "옵션 정보",
+                                  "properties": {
+                                    "stock_count": {
+                                      "type": "integer",
+                                      "description": "재고수량"
+                                    },
+                                    "option_price": {
+                                      "type": "integer",
+                                      "description": "옵션 가격"
+                                    }
+                                  }
+                                },
+                                "is_show": {
+                                  "type": "boolean",
+                                  "description": "옵션 노출 여부"
+                                },
+                                "ordering": {
+                                  "type": "integer",
+                                  "description": "정렬순서"
+                                },
+                                "positions": {
+                                  "type": "array",
+                                  "description": "옵션 위치",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "selected_count": {
+                                  "type": "integer",
+                                  "description": "선택 수량"
+                                }
+                              }
+                            },
+                            "shipping_info": {
+                              "type": "object",
+                              "description": "배송정보",
+                              "properties": {
+                                "delivery_num": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "송장번호"
+                                },
+                                "delivery_company": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "배송 업체 이름"
+                                },
+                                "delivery_company_code": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "배송 업체 코드"
+                                }
+                              }
+                            },
+                            "tracking_info": {
+                              "type": "object",
+                              "description": "배송 추정 정보",
+                              "properties": {
+                                "invoice_num": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "송장번호"
+                                },
+                                "result": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "결과",
+                                  "enum": [
+                                    "Y",
+                                    "N"
+                                  ]
+                                },
+                                "last_state_detail": {
+                                  "$ref": "#/components/schemas/TrackingDetail"
+                                },
+                                "tracking_details": {
+                                  "type": "array",
+                                  "description": "배송 추적 상세정보 목록",
+                                  "items": {
+                                    "$ref": "#/components/schemas/TrackingDetail"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/V2_jordy_Response_meta_empty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_401"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_403"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/V3_response_error_500"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-api-v2-jordy-orders-goods-orderNum-tracking",
+        "description": "v2 죠르디 주문상품 배송추적 정보 조회 endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Header_authorization"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "member_order_product_list_payload": {
+        "title": "member_order_product_list",
+        "type": "object",
+        "description": "",
+        "properties": {
+          "order_product_num": {
+            "type": "string",
+            "description": "주문상품 번호 (주문상품 식별자)"
+          },
+          "order_num": {
+            "type": "string",
+            "description": "주문 번호 (주문 식별자)"
+          },
+          "total_prev_price": {
+            "type": "integer",
+            "description": "주문한 상품의 할인전 총 금액 (상품의 할인전 금액 * 수량)"
+          },
+          "total_price": {
+            "type": "integer",
+            "description": "주문 총 금액 (결제 금액 + 쿠폰 할인 금액 + 사용한 포인트)"
+          },
+          "paid_price": {
+            "type": "integer",
+            "description": "결제 금액"
+          },
+          "discounted_coupon_price": {
+            "type": "integer",
+            "description": "쿠폰 할인 금액"
+          },
+          "consumed_point": {
+            "type": "integer",
+            "description": "사용한 포인트"
+          },
+          "product": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "상품 식별자"
+              },
+              "name": {
+                "type": "string",
+                "description": "상품 이름"
+              },
+              "price": {
+                "type": "integer",
+                "description": "상품 가격"
+              },
+              "prev_price": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "상품 할인 전 가격"
+              },
+              "event_price": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "상품 할인된 가격"
+              },
+              "discount_rate": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "상품 할인율"
+              },
+              "is_on_event_sale": {
+                "type": "boolean",
+                "description": "상품 세일중 여부"
+              },
+              "shipping_speed": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "상품 배송 속도",
+                "enum": [
+                  "fast",
+                  "slow"
+                ]
+              },
+              "status": {
+                "$ref": "#/components/schemas/V2_jordy_Enum_product_status"
+              },
+              "images": {
+                "type": "object",
+                "description": "사진 Url 목록",
+                "properties": {
+                  "main": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "detail": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "store": {
+                "type": "object",
+                "description": "스토어 정보",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "스토어 식별자"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "스토어 이름"
+                  },
+                  "group": {
+                    "$ref": "#/components/schemas/V2_jordy_Enum_store_group_id"
+                  },
+                  "phone_number": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "스토어 연락처"
+                  }
+                }
+              },
+              "virtual_brand": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "가상브랜드 스토어 정보",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "가상브랜드 스토어 식별자"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "가상브랜드 스토어 이름"
+                  },
+                  "group": {
+                    "$ref": "#/components/schemas/V2_jordy_Enum_store_group_id"
+                  },
+                  "phone_number": {
+                    "type": "null",
+                    "description": "가상브랜드 스토어 연락처"
+                  }
+                }
+              },
+              "category": {
+                "type": "object",
+                "description": "상품 카테고리",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "카테고리 식별자"
+                  },
+                  "division1": {
+                    "type": "string",
+                    "description": "대분류"
+                  },
+                  "division2": {
+                    "type": "string",
+                    "description": "소뷴류"
+                  }
+                }
+              }
+            }
+          },
+          "option": {
+            "type": "object",
+            "description": "선택한 옵션 정보",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "옵션 식별자"
+              },
+              "positions": {
+                "type": "array",
+                "description": "옵션 위치\n\nsample : [\"데님(착용)\",\"S(28)\"]",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "option_price": {
+                "type": "integer",
+                "description": "옵션 추가 가격"
+              },
+              "selected_count": {
+                "type": "integer",
+                "description": "선택한 개수"
+              }
+            }
+          },
+          "reviewable_type": {
+            "type": "object",
+            "description": "리뷰 작성가능 여부 정보",
+            "properties": {
+              "simple": {
+                "type": "boolean",
+                "description": "퀵리뷰 작성가능 여부"
+              },
+              "content": {
+                "type": "boolean",
+                "description": "컨텐츠리뷰 작성가능 여부"
+              },
+              "photo": {
+                "type": "boolean",
+                "description": "포토리뷰 작성가능 여부"
+              }
+            }
+          },
+          "current_status": {
+            "type": "object",
+            "description": "현재 상태 정보",
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/V2_jordy_Enum_order_status"
+              },
+              "text": {
+                "type": "string",
+                "description": "현재 상태 텍스트"
+              }
+            }
+          },
+          "next_statuses": {
+            "type": "array",
+            "description": "다음 상태 목록",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "$ref": "#/components/schemas/V2_jordy_Enum_order_status"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "다음 상태 텍스트"
+                },
+                "action": {
+                  "oneOf": [
+                    {
+                      "description": "form",
+                      "properties": {
+                        "action_type": {
+                          "type": "string",
+                          "enum": [
+                            "form"
+                          ],
+                          "description": "액션 타입"
+                        },
+                        "btn_text": {
+                          "type": "string",
+                          "description": "버튼 텍스트"
+                        },
+                        "color": {
+                          "type": "string",
+                          "description": "색상"
+                        },
+                        "title": {
+                          "type": "string",
+                          "description": "제목"
+                        },
+                        "reasons": {
+                          "type": "array",
+                          "description": "다음 상태 사유 목록",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "policy_photo_urls": {
+                          "type": "object",
+                          "description": "정책 사진 정보",
+                          "properties": {
+                            "iOS": {
+                              "type": "string",
+                              "description": "iOS 정보"
+                            },
+                            "Android": {
+                              "type": "string",
+                              "description": "안드로이드 정보"
+                            },
+                            "Web": {
+                              "type": "string",
+                              "description": "웹 정보"
+                            }
+                          }
+                        },
+                        "need_re_ship": {
+                          "type": "boolean",
+                          "description": "반송 필요 어부"
+                        }
+                      }
+                    },
+                    {
+                      "description": "dialog",
+                      "properties": {
+                        "action_type": {
+                          "type": "string",
+                          "enum": [
+                            "dialog"
+                          ],
+                          "description": "dialog"
+                        },
+                        "btn_text": {
+                          "type": "string",
+                          "description": "버튼 텍스트"
+                        },
+                        "color": {
+                          "type": "string",
+                          "description": "색상"
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "메세지"
+                        },
+                        "need_re_ship": {
+                          "type": "boolean",
+                          "description": "반송 필요 어부"
+                        }
+                      }
+                    }
+                  ],
+                  "description": "다음 상태의 액션정보",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "shipping_info": {
+            "type": "object",
+            "description": "배송지 정보",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "수신자 이름"
+              },
+              "phone_number": {
+                "type": "string",
+                "description": "전화번호"
+              },
+              "address": {
+                "type": "object",
+                "description": "주소",
+                "properties": {
+                  "main": {
+                    "type": "string",
+                    "description": "기본주소"
+                  },
+                  "detail": {
+                    "type": "string",
+                    "description": "상세주소"
+                  },
+                  "zipcode": {
+                    "type": "string",
+                    "description": "우편번호"
+                  }
+                }
+              }
+            }
+          },
+          "delivery_info": {
+            "type": "object",
+            "description": "배송정보",
+            "properties": {
+              "delivery_num": {
+                "type": "string",
+                "description": "송장 번호"
+              },
+              "delivery_company": {
+                "type": "string",
+                "description": "운송 회사"
+              },
+              "delivery_company_code": {
+                "type": "string",
+                "description": "운송 회사 코드"
+              },
+              "tracking_url": {
+                "type": "string",
+                "description": "트래킹 URL"
+              }
+            }
+          },
+          "virtual_account_info": {
+            "type": "object",
+            "description": "가상계좌 정보",
+            "properties": {
+              "bank_name": {
+                "type": "string",
+                "description": "은행 이름"
+              },
+              "account_num": {
+                "type": "string",
+                "description": "계좌번호"
+              },
+              "amount": {
+                "type": "integer",
+                "description": "금액"
+              },
+              "holder": {
+                "type": "string",
+                "description": "입금자명"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "유효기간"
+              }
+            }
+          },
+          "member_closet_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "옷장 식별자"
+          }
+        }
+      },
+      "TrackingDetail": {
+        "title": "TrackingDetail",
+        "x-stoplight": {
+          "id": "qe27gatf6e5uc"
+        },
+        "type": "object",
+        "description": "배송추적 상세",
+        "properties": {
+          "telno": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행위치(지점)전화번호"
+          },
+          "telno2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "배송기사 전화번호"
+          },
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "배송상태코드"
+          },
+          "level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행단계"
+          },
+          "man_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "배송기사이름"
+          },
+          "time_string": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행시간 문자타입"
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행상태"
+          },
+          "where": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행위치(지점)"
+          },
+          "remark": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "비고"
+          },
+          "man_pic": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "배송기사 사진"
+          },
+          "time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "진행시간"
+          }
+        }
+      },
+      "V2_jordy_Created_at": {
+        "type": "string",
+        "title": "created_at",
+        "format": "date-time",
+        "examples": [
+          "2021-08-13T12:30:11.793+09:00"
+        ],
+        "description": "생성일시"
+      },
+      "V2_jordy_Enum_gender_id": {
+        "type": "string",
+        "title": "enum_gender_id",
+        "enum": [
+          "both",
+          "men",
+          "women"
+        ],
+        "description": "성별",
+        "examples": []
+      },
+      "V2_jordy_Enum_order_status": {
+        "type": "string",
+        "title": "enum_order_status",
+        "enum": [
+          "empty_status",
+          "pay_wait",
+          "pay_fail",
+          "pay_success",
+          "pay_cancel",
+          "ship_wait",
+          "ship_ing",
+          "ship_done",
+          "cancel_wait",
+          "cancel_soon",
+          "cancel_soon_auto",
+          "cancel_soon_partner",
+          "cancel_done",
+          "cancel_done_auto",
+          "cancel_done_partner",
+          "cancel_cancel",
+          "change_wait",
+          "change_pickup",
+          "change_done",
+          "change_hold",
+          "change_cancel",
+          "re_ship",
+          "refund_wait",
+          "refund_pickup",
+          "refund_soon",
+          "refund_done",
+          "refund_hold",
+          "refund_cancel",
+          "refund_done_confirm",
+          "refund_soon_partner",
+          "confirm",
+          "confirm_cancel",
+          "request_refund"
+        ],
+        "description": "주문상태"
+      },
+      "V2_jordy_Enum_payment_method": {
+        "type": "string",
+        "title": "enum_payment_method",
+        "x-stoplight": {
+          "id": "7ph3zmdt2zpzq"
+        },
+        "description": "결제 방법",
+        "enum": [
+          "vbank",
+          "card",
+          "naverpay",
+          "kakaopay",
+          "tosspay",
+          "payco",
+          "phone",
+          "mobx",
+          "vcnt"
+        ]
+      },
+      "V2_jordy_Enum_product_status": {
+        "type": "string",
+        "title": "enum_product_status",
+        "description": "상품 판매 상태",
+        "enum": [
+          "sale_wait",
+          "sale",
+          "sold_out",
+          "sale_stop"
+        ]
+      },
+      "V2_jordy_Enum_store_group_id": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "title": "enum_store_group_id",
+        "enum": [
+          "brand",
+          "default",
+          "parallel",
+          "virtual_brand"
+        ],
+        "description": "스토어 그룹"
+      },
+      "V2_jordy_Reponse_status_success": {
+        "type": "string",
+        "title": "reponse_status_success",
+        "examples": [
+          "success"
+        ],
+        "enum": [
+          "success"
+        ],
+        "description": "성공응답 상태"
+      },
+      "V2_jordy_Response_meta_empty": {
+        "title": "response_meta_empty",
+        "type": "object",
+        "description": "비어 있는 meta 정보"
+      },
+      "V2_jordy_Response_meta_page": {
+        "title": "v3_response_list_meta",
+        "type": "object",
+        "examples": [
+          {
+            "current_page": 1,
+            "total_count": 10,
+            "total_pages": 1,
+            "prev_page": null,
+            "next_page": null
+          },
+          {
+            "current_page": 2,
+            "total_count": 10,
+            "total_pages": 3,
+            "prev_page": 1,
+            "next_page": 3
+          }
+        ],
+        "description": "V3 목록 형태의 응답의 메타 데이터 - 페이징 정보",
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "현재 페이지"
+          },
+          "total_count": {
+            "type": "integer",
+            "format": "int64",
+            "description": "전체 결과 개수"
+          },
+          "total_pages": {
+            "type": "integer",
+            "format": "int32",
+            "description": "총 페이지수 (=마지막 페이지 번호)"
+          },
+          "prev_page": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "이전 페이지\n이전 페이지가 없으면 null"
+          },
+          "next_page": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "다음 페이지 \n다음 페이지가 없으면 null"
+          }
+        }
+      },
+      "V2_jordy_Updated_at": {
+        "type": "string",
+        "title": "created_at",
+        "format": "date-time",
+        "examples": [
+          "2021-08-13T12:30:11.793+09:00"
+        ],
+        "description": "수정일시"
+      },
+      "V3_response_error_400": {
+        "title": "v3_response_error_400",
+        "type": "object",
+        "description": "V3 400 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "BAD_REQUEST",
+            "message": "잘못된 요청입니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "BAD_REQUEST",
+              "INVALID_PARAMETER"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_401": {
+        "title": "v3_response_error_401",
+        "type": "object",
+        "description": "V3 401 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "UNAUTHORIZED",
+            "message": "인증이 필요합니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "UNAUTHORIZED",
+              "SIGN_IN_SOCIAL_NO_MEMBER",
+              "SIGN_IN_SOCIAL_EXISTS_EMAIL",
+              "SIGN_IN_SOCIAL_INVALID_EMAIL"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_403": {
+        "title": "v3_response_error_403",
+        "type": "object",
+        "description": "V3 403 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "FORBIDDEN",
+            "message": "콘텐츠에 접근할 권한이 없습니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "FORBIDDEN"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_error_500": {
+        "title": "v3_response_error_500",
+        "type": "object",
+        "description": "V3 500 오류 응답",
+        "examples": [
+          {
+            "status": "error",
+            "code": "INTERNAL_SERVER_ERROR",
+            "message": "오류가 발생하였습니다."
+          },
+          {
+            "status": "error",
+            "code": "NO_DATA",
+            "message": "데이터가 없습니다."
+          }
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "오류 상태 (항상 error)",
+            "default": "error"
+          },
+          "code": {
+            "type": "string",
+            "description": "오류 코드",
+            "enum": [
+              "INTERNAL_SERVER_ERROR",
+              "NO_DATA"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "오류 메세지"
+          }
+        }
+      },
+      "V3_response_success_simple": {
+        "title": "v3_response_success_simple",
+        "type": "object",
+        "description": "v3 단순 성공 응답 정보",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/V2_jordy_Reponse_status_success"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "V1_model_Page[number]": {
+        "name": "page[number]",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "페이지 번호"
+      },
+      "V1_model_Page[size]": {
+        "name": "page[size]",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "페이지 사이즈"
+      },
+      "Header_authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "인증토큰"
+      },
+      "Header_context_source": {
+        "name": "HTTP_X_CONTEXT_SOURCE",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "진입 경로"
+      },
+      "Header_platform": {
+        "name": "lookpin-platform",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "Web",
+            "Android",
+            "iOS"
+          ]
+        },
+        "description": "사용자 플랫폼"
+      }
+    }
+  }
+}

@@ -1,9 +1,9 @@
 import {
+  BaseFeatureFileInfoDto,
   CodeGeneratorFileConfigDto,
   CodeGeneratorFolderConfigDto,
   CodeGeneratorPathConfigDto,
   DirectoryMakerFn,
-  FeatureFileInfoDto,
   TemplateCompiler,
   TextFileAppendFn,
   TextFileReaderFn,
@@ -11,26 +11,25 @@ import {
 } from './types';
 import { filterByExcludesCurried } from './utils';
 
-export interface CodeFileWriter {
-  makeAll(
-    config: CodeGeneratorPathConfigDto,
-    fileInfo: FeatureFileInfoDto
-  ): Promise<number>;
+export interface CodeFileWriter<T extends BaseFeatureFileInfoDto> {
+  makeAll(config: CodeGeneratorPathConfigDto, fileInfo: T): Promise<number>;
 }
 
-export class CodeFileWriterService implements CodeFileWriter {
+export class CodeFileWriterService<T extends BaseFeatureFileInfoDto>
+  implements CodeFileWriter<T>
+{
   constructor(
     private read: TextFileReaderFn,
-    private compile: TemplateCompiler,
+    private compile: TemplateCompiler<T>,
     private write: TextFileWriterFn,
-    private append: TextFileAppendFn,
-    private mkdir: DirectoryMakerFn
+    private mkdir: DirectoryMakerFn,
+    private append: TextFileAppendFn<T>
   ) {}
 
   async makeDirectory(
     basePath: string,
     folderInfo: CodeGeneratorFolderConfigDto,
-    fileInfo: FeatureFileInfoDto
+    fileInfo: T
   ) {
     const destPath = await this.compile(
       `${basePath}/${folderInfo.folderName}`,
@@ -59,7 +58,7 @@ export class CodeFileWriterService implements CodeFileWriter {
     basePath: string,
     featInfo: CodeGeneratorFileConfigDto,
     template: string,
-    fileInfo: FeatureFileInfoDto
+    fileInfo: T
   ) {
     const destPath = await this.compile(
       `${basePath}/${featInfo.fileName}`,
@@ -89,10 +88,7 @@ export class CodeFileWriterService implements CodeFileWriter {
     await this.write(destPath, sourceCode, hasTemplate);
   }
 
-  async makeAll(
-    config: CodeGeneratorPathConfigDto,
-    fileInfo: FeatureFileInfoDto
-  ) {
+  async makeAll(config: CodeGeneratorPathConfigDto, fileInfo: T) {
     const { base, folders, files, excludes } = config;
 
     if (excludes && excludes.includes(fileInfo.featureName)) {

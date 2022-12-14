@@ -1,11 +1,18 @@
 import { Command } from 'commander';
 import fs from 'fs/promises';
-import { CLI_ASSETS_NAME } from './constants';
-import { createCodeFileWriterService, createFilePathParser } from './factory';
+import { appendLogics } from './code-generator/appendLogics';
+import { createFilePathParser } from './code-generator/factory';
+import './code-generator/handlebarsHelpers';
+import './entity-generator/handlebarsHelpers';
+import { CodeGeneratorComponentsConfigKeyType } from './code-generator';
 import {
-  CodeGeneratorComponentsConfigKeyType,
+  CLI_ASSETS_NAME,
   CodeGeneratorModuleConfigDto,
-} from './types';
+  createCodeFileWriterService,
+  createDataFileReader,
+} from './common';
+import { createOpenApi3Parser } from './entity-generator';
+import { OpenAPIObject } from 'openapi3-ts';
 
 async function getDefaultConfig() {
   const jsonConfig = await fs.readFile(
@@ -20,7 +27,7 @@ async function getDefaultConfig() {
 
 export default async function codeGeneratorCLI() {
   const program = new Command();
-  const service = createCodeFileWriterService();
+  const service = createCodeFileWriterService(appendLogics);
   const defConfig = await getDefaultConfig();
 
   program
@@ -95,6 +102,17 @@ export default async function codeGeneratorCLI() {
 
       console.log('sb', path, type, fileInfo);
     });
+
+  program.command('entity').action(async () => {
+    const reader = createDataFileReader<OpenAPIObject>();
+    const parser = createOpenApi3Parser(defConfig.core);
+
+    const openApiData = await reader.readByPattern(defConfig.core.openApi);
+
+    parser
+      .parseAll(openApiData)
+      .map((datum) => service.makeAll(defConfig.core.entity, datum));
+  });
 
   program.parse(process.argv);
 }

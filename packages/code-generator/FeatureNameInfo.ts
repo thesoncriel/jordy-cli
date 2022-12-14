@@ -1,5 +1,5 @@
+import { toCapitalize } from '../common';
 import { FeatureNameInfoDto } from './types';
-import { toCapitalize } from './utils';
 
 export class FeatureNameInfo implements FeatureNameInfoDto {
   private _featureNameAsPascalCase: string;

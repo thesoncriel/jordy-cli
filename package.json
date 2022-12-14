@@ -8,11 +8,12 @@
     "bundle": "esbuild packages/index.ts --bundle --platform=node --outfile=build/index.js",
     "build": "npm-run-all clean bundle",
     "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test:watch": "vitest --watch",
     "prettier": "prettier './packages/**/*.ts'",
     "lint": "eslint 'packages/**'",
     "clean:src": "rimraf src",
-    "test:cli": "sh ./cli-test.sh"
+    "test:cli": "sh ./cli-test.sh",
+    "test:entity": "sh ./cli-test-entity.sh"
   },
   "bin": {
     "jordy-cli": "./bin/index.js"
@@ -40,10 +41,15 @@
   "homepage": "https://github.com/thesoncriel/jordy-cli#readme",
   "dependencies": {
     "commander": "^9.4.0",
+    "glob": "^8.0.3",
     "handlebars": "^4.7.7",
-    "lodash-es": "^4.17.21"
+    "js-yaml": "^4.1.0",
+    "lodash-es": "^4.17.21",
+    "openapi3-ts": "^3.1.2"
   },
   "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/js-yaml": "^4.0.5",
     "@types/lodash-es": "^4.17.6",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
@@ -59,7 +65,7 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
     "vite": "^3.0.4",
-    "vitest": "^0.20.2"
+    "vitest": "^0.25.6"
   },
   "files": [
     "bin",
