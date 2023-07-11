@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import { ComponentProps, useRef, useEffect } from 'react';
 import { actions } from '@storybook/addon-actions';
-import { Story, Meta, ArgTypes } from '@storybook/react';
+import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react';
 import styled from 'styled-components';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
 
@@ -28,7 +28,7 @@ const Button = styled.button`
 
 const actionHandlers = actions('onTestMethod1');
 
-const Template: Story<StoryProps> = ({ ...props }) => {
+const Template: StoryFn<StoryProps> = ({ ...props }) => {
   const ref = useRef<{{fileName}}Handle>(null);
 
   const getInstance = () => {
@@ -54,6 +54,9 @@ const Template: Story<StoryProps> = ({ ...props }) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
+export const Default: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    
+  },
 };

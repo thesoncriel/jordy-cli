@@ -18,6 +18,21 @@ async function getDefaultConfig() {
   return JSON.parse(jsonConfig) as CodeGeneratorModuleConfigDto;
 }
 
+function getSnippetsFilePath() {
+  const basePath = `${__dirname}/../${CLI_ASSETS_NAME}/snippets`;
+  const fileNames = [
+    'typescript.code-snippets',
+    'typescriptreact.code-snippets',
+  ];
+
+  return fileNames.map((fileName) => {
+    return {
+      src: `${basePath}/${fileName}`,
+      dest: `./.vscode/${fileName}`,
+    };
+  });
+}
+
 export default async function codeGeneratorCLI() {
   const program = new Command();
   const service = createCodeFileWriterService();
@@ -95,6 +110,15 @@ export default async function codeGeneratorCLI() {
 
       console.log('sb', path, type, fileInfo);
     });
+
+  program.command('snippets').action(async () => {
+    await fs.mkdir('./.vscode', { recursive: true });
+    await Promise.all(
+      getSnippetsFilePath().map(({ src, dest }) => fs.copyFile(src, dest))
+    );
+
+    console.log('snippets - copy success!');
+  });
 
   program.parse(process.argv);
 }

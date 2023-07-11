@@ -12,3 +12,4 @@ node bin ui ./src/ui/components/design/system/tag/someSome OtherTag
 node bin ui ./src/ui/components/design ItsMyLifeMusicView imperative
 node bin ui ./src/ui/components/design/system/ OhMyLookpinForm imperative
 node bin ui ./src/ui/components/lookpin LookpinView
+node bin snippets

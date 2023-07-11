@@ -1,18 +1,16 @@
 /* eslint-disable no-alert */
 import { ComponentProps, useRef, useEffect } from 'react';
 import { actions } from '@storybook/addon-actions';
-import { Story, Meta, ArgTypes } from '@storybook/react';
+import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react';
 import styled from 'styled-components';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
+  defaultShow?: boolean;
 }
 
 type MyArgTypes = Partial<Record<keyof StoryProps, ArgTypes[string]>>;
 const argTypesSetting: MyArgTypes = {
-  defaultShow: {
-    control: 'boolean',
-  },
 };
 
 export default {
@@ -31,7 +29,7 @@ const Button = styled.button`
 
 const modalEvent = actions('onTestModalFinish', 'onTestModalError');
 
-const Template: Story<StoryProps> = ({ defaultShow, ...props }) => {
+const Template: StoryFn<StoryProps>= ({ defaultShow, ...props }) => {
   const refModal = useRef<{{fileName}}Handle>(null);
 
   const handleOpen = () => {
@@ -53,13 +51,17 @@ const Template: Story<StoryProps> = ({ defaultShow, ...props }) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  defaultShow: true,
+export const Default: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    defaultShow: true,
+  },
 };
 
-export const WithTrigger = Template.bind({});
-WithTrigger.args = {
-  ...Default.args,
-  defaultShow: false,
+export const WithTrigger: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    ...Default.args,
+    defaultShow: false,
+  },
 };
