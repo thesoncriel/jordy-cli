@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { ComponentProps } from 'react';
-import { Story, Meta, ArgTypes } from '@storybook/react';
+import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react';
 import { {{fileName}} } from '../{{fileName}}';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
@@ -17,12 +17,14 @@ export default {
   parameters: { actions: { argTypesRegex: '^on.*' } }
 } as Meta;
 
-const Template: Story<StoryProps> = ({ ...props }) => {
+const Template: StoryFn<StoryProps> = ({ ...props }) => {
   return (
     <{{fileName}} {...props}></{{fileName}}>
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
+export const Default: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+  },
 };
