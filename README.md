@@ -27,3 +27,9 @@ $ npm install jordy-cli
 ```sh
 npm run cli feat lookpin userQuestion
 ```
+
+아래는 vscode 에서 쓰이는 공용 스니펫(snippets)을 복사합니다.
+
+```sh
+npm run cli snippets
+```
