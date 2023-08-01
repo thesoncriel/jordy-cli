@@ -1,4 +1,4 @@
-import { AppendLogicDictionaryModel, FeatureFileInfoDto } from './types';
+import { AppendLogicDictionaryDto, FeatureFileInfoDto } from './types';
 import { difference } from 'lodash-es';
 
 function appendWithoutDuplicates(
@@ -87,7 +87,7 @@ function appendReducers(
   return result.join('\n');
 }
 
-export const appendLogics: AppendLogicDictionaryModel = {
+export const appendLogics: AppendLogicDictionaryDto = {
   appendWithoutDuplicates,
   appendReducers,
 };
