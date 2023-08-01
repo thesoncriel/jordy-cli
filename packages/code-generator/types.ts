@@ -102,7 +102,7 @@ export interface TextFileAppendFn<T = FeatureFileInfoDto> {
   ): Promise<boolean>;
 }
 
-export interface AppendLogicDictionaryModel<T = FeatureFileInfoDto> {
+export interface AppendLogicDictionaryDto<T = FeatureFileInfoDto> {
   [name: string]: (prevCode: string, nextSourceCode: string, data: T) => string;
 }
 

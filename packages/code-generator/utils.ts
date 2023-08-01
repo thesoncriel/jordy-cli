@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { dirname } from 'path';
-import { AppendLogicDictionaryModel, FeatureFileInfoDto } from './types';
+import { AppendLogicDictionaryDto, FeatureFileInfoDto } from './types';
 import Handlebars from 'handlebars';
 import { CLI_ASSETS_NAME, COMMON_FEATURE_NAMES } from './constants';
 
@@ -114,7 +114,7 @@ export function appendLineBreakToEOL(value: string) {
 }
 
 export const appendLogicCurried =
-  (logicDic: AppendLogicDictionaryModel) =>
+  (logicDic: AppendLogicDictionaryDto) =>
   async (
     targetPath: string,
     nextCode: string,

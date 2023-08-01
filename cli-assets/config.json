@@ -48,7 +48,7 @@
           "fileName": "manipulates/index.ts"
         },
         {
-          "fileName": "models/index.ts"
+          "fileName": "uiStates/index.ts"
         }
       ],
       "folders": [
