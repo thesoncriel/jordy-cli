@@ -1,0 +1,36 @@
+import { ReactNode } from 'react';
+import { Table } from 'antd';
+import cn from 'clsx';
+import { use{{fileName}}Columns } from './use{{fileName}}Columns';
+
+interface {{fileName}}Props {
+  className?: string;
+  loading?: boolean;
+  items: SomeUiState[];
+  children?: ReactNode;
+}
+
+export function {{fileName}}({
+  className,
+  loading,
+  items,
+  children,
+}: {{fileName}}Props) {
+  const columns = use{{fileName}}Columns();
+
+  return (
+    <div className={cn(className)}>
+      <Table
+        loading={loading}
+        size="small"
+        rowKey=""
+        sticky
+        scroll=\{{ x: '1300px' }}
+        columns={columns}
+        dataSource={items}
+        pagination={false}
+      />
+      {children}
+    </div>
+  );
+};

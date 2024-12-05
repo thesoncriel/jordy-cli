@@ -1,16 +1,15 @@
 import { ReactNode, forwardRef, useImperativeHandle, useState, useRef } from 'react';
+import { PromiseResolver } from 'jordy';
 import cn from 'clsx';
 
 interface {{fileName}}Props {
   className?: string;
   defaultShow?: boolean;
   children?: ReactNode;
-  onAccept: (args: SomeUiState) => void;
-  onClose: () => void;
 }
 
 export interface {{fileName}}Handle {
-  open(payload: SomeUiState): void;
+  open(): Promise<void>
 }
 
 export const {{fileName}} = forwardRef<
@@ -20,16 +19,22 @@ export const {{fileName}} = forwardRef<
   className,
   defaultShow = false,
   children,
-  onAccept,
   ...props,
 }, ref) => {
+  const refResolver = useRef<PromiseResolver<void> | null>(null);
   const [show, setShow] = useState(defaultShow);
 
   useImperativeHandle(
     ref,
     () => ({
-      open(payload) {
-        setShow(true);
+      open() {
+        return new Promise<void>((resolve, reject) => {
+          setShow(true);
+          refResolver.current = {
+            resolve,
+            reject,
+          };
+        });
       },
     }),
     [],
@@ -37,11 +42,20 @@ export const {{fileName}} = forwardRef<
 
   const handleCancel = () => {
     setShow(false);
+  
+    if (refResolver.current) {
+      refResolver.current.resolve();
+      refResolver.current = null;
+    }
   };
 
   const handleOk = () => {
     setShow(false);
-    onAccept(someValue);
+  
+    if (refResolver.current) {
+      refResolver.current.resolve();
+      refResolver.current = null;
+    }
   };
 
   return (

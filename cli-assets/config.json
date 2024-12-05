@@ -49,6 +49,14 @@
         },
         {
           "fileName": "uiStates/index.ts"
+        },
+        {
+          "excludes": ["common"],
+          "fileName": "repositories/{{fullName}}.repo.ts"
+        },
+        {
+          "excludes": ["common"],
+          "fileName": "repositories/mappers/{{fullName}}.mappers.ts"
         }
       ],
       "folders": [
@@ -91,6 +99,21 @@
         }
       ]
     },
+
+    "antdTable": {
+      "base": "src/{{withFeature featureName}}/components{{withSubPath subPath}}",
+      "excludes": ["core"],
+      "files": [
+        {
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-antdTable.tsx.handlebars"
+        },
+        {
+          "fileName": "use{{fileNameAsPascalCase}}Columns.tsx",
+          "template": "__defTemplates/component-antdTable-columns.tsx.handlebars"
+        }
+      ]
+    },
     "dialog": {
       "base": "src/{{withFeature featureName}}/components{{withSubPath subPath}}",
       "excludes": ["core"],
@@ -98,6 +121,16 @@
         {
           "fileName": "{{fileNameAsPascalCase}}.tsx",
           "template": "__defTemplates/component-dialog.tsx.handlebars"
+        }
+      ]
+    },
+    "dialogWithResolver": {
+      "base": "src/{{withFeature featureName}}/components{{withSubPath subPath}}",
+      "excludes": ["core"],
+      "files": [
+        {
+          "fileName": "{{fileNameAsPascalCase}}.tsx",
+          "template": "__defTemplates/component-dialogWithResolver.tsx.handlebars"
         }
       ]
     },
