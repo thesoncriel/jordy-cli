@@ -5,14 +5,16 @@ import { createCodeFileWriterService, createFilePathParser } from './factory';
 import {
   CodeGeneratorComponentsConfigKeyType,
   CodeGeneratorModuleConfigDto,
+  StorybookKeyType,
 } from './types';
+import { getStorybookKey } from './getStorybookKey';
 
 async function getDefaultConfig() {
   const jsonConfig = await fs.readFile(
     `${__dirname}/../${CLI_ASSETS_NAME}/config.json`,
     {
       encoding: 'utf8',
-    }
+    },
   );
 
   return JSON.parse(jsonConfig) as CodeGeneratorModuleConfigDto;
@@ -76,17 +78,14 @@ export default async function codeGeneratorCLI() {
     .argument('<name>', 'ui-component name')
     .argument(
       '[type]',
-      'one of normal, dialog, imperative, memo (default normal)'
+      'one of normal, dialog, dialogWithResolver, imperative, memo, antdTable (default normal)',
     )
     .action((path, name, type) => {
       const parser = createFilePathParser();
       const fileInfo = parser.parseForComponent(path, name);
       const componentKey: CodeGeneratorComponentsConfigKeyType =
         type in defConfig.components ? type : 'normal';
-      const storybookKey: Exclude<
-        CodeGeneratorComponentsConfigKeyType,
-        'memo'
-      > = componentKey === 'memo' ? 'normal' : componentKey;
+      const storybookKey = getStorybookKey(componentKey);
 
       service.makeAll(defConfig.components[componentKey], fileInfo);
       service.makeAll(defConfig.storybook[storybookKey], fileInfo);
@@ -101,10 +100,8 @@ export default async function codeGeneratorCLI() {
     .action((path, type) => {
       const parser = createFilePathParser();
       const fileInfo = parser.parse(path);
-      const storybookKey: Exclude<
-        CodeGeneratorComponentsConfigKeyType,
-        'memo'
-      > = type in defConfig.storybook ? type : 'normal';
+      const storybookKey: StorybookKeyType =
+        type in defConfig.storybook ? type : 'normal';
 
       service.makeAll(defConfig.storybook[storybookKey], fileInfo);
 
@@ -114,7 +111,7 @@ export default async function codeGeneratorCLI() {
   program.command('snippets').action(async () => {
     await fs.mkdir('./.vscode', { recursive: true });
     await Promise.all(
-      getSnippetsFilePath().map(({ src, dest }) => fs.copyFile(src, dest))
+      getSnippetsFilePath().map(({ src, dest }) => fs.copyFile(src, dest)),
     );
 
     console.log('snippets - copy success!');

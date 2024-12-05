@@ -1,8 +1,10 @@
 export type CodeGeneratorComponentsConfigKeyType =
   | 'normal'
   | 'dialog'
+  | 'dialogWithResolver'
   | 'imperative'
-  | 'memo';
+  | 'memo'
+  | 'antdTable';
 
 export type CodeGeneratorStoresConfigKeyType =
   | 'storeSub'
@@ -38,6 +40,11 @@ export interface FilePathParser {
   extractFeatureName(path: string): string;
 }
 
+export type StorybookKeyType = Exclude<
+  CodeGeneratorComponentsConfigKeyType,
+  'memo' | 'dialogWithResolver' | 'antdTable'
+>;
+
 export interface CodeGeneratorModuleConfigDto {
   name: string;
   stores: Record<CodeGeneratorStoresConfigKeyType, CodeGeneratorPathConfigDto>;
@@ -45,10 +52,7 @@ export interface CodeGeneratorModuleConfigDto {
     CodeGeneratorComponentsConfigKeyType,
     CodeGeneratorPathConfigDto
   >;
-  storybook: Record<
-    Exclude<CodeGeneratorComponentsConfigKeyType, 'memo'>,
-    CodeGeneratorPathConfigDto
-  >;
+  storybook: Record<StorybookKeyType, CodeGeneratorPathConfigDto>;
 }
 
 export interface CodeGeneratorFileConfigDto {
@@ -89,7 +93,7 @@ export interface TextFileWriterFn {
   (
     targetPath: string,
     source: string,
-    forceOverwrite: boolean
+    forceOverwrite: boolean,
   ): Promise<boolean>;
 }
 
@@ -98,7 +102,7 @@ export interface TextFileAppendFn<T = FeatureFileInfoDto> {
     targetPath: string,
     nextSourceCode: string,
     data: T,
-    logic: string
+    logic: string,
   ): Promise<boolean>;
 }
 
