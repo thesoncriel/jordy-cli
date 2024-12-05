@@ -1,7 +1,8 @@
 import { ReactNode, forwardRef, useImperativeHandle } from 'react';
-import styled from 'styled-components';
+import cn from 'clsx';
 
 interface {{fileName}}Props {
+  className?: string;
   children?: ReactNode;
 }
 
@@ -9,14 +10,11 @@ export interface {{fileName}}Handle {
   someMethod(): void
 }
 
-const Wrap = styled.div`
-
-`;
-
 export const {{fileName}} = forwardRef<
   {{fileName}}Handle,
   {{fileName}}Props
 >(({
+  className,
   children,
   ...props,
 }, ref) => {
@@ -32,9 +30,9 @@ export const {{fileName}} = forwardRef<
   );
 
   return (
-    <Wrap>
+    <div className={cn(className)}>
       {children}
-    </Wrap>
+    </div>
   );
 });
 

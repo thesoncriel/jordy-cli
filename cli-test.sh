@@ -11,5 +11,8 @@ node bin ui ./src/ui/components/design/system/tag/someSome BaseTag memo
 node bin ui ./src/ui/components/design/system/tag/someSome OtherTag
 node bin ui ./src/ui/components/design ItsMyLifeMusicView imperative
 node bin ui ./src/ui/components/design/system/ OhMyLookpinForm imperative
+node bin ui ./src/features/sonic/components/sonic2 ChemicalPlantZoneView dialog
+node bin ui ./src/features/sonic/components/sonic2 CasinoNightZoneView dialogWithResolver
 node bin ui ./src/ui/components/lookpin LookpinView
+node bin ui ./src/ui/components/lookpin LookpinSearchTable antdTable
 node bin snippets

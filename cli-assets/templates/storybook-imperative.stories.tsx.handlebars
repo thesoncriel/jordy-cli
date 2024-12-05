@@ -2,7 +2,6 @@
 import { ComponentProps, useRef, useEffect } from 'react';
 import { actions } from '@storybook/addon-actions';
 import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react';
-import styled from 'styled-components';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
@@ -19,36 +18,20 @@ export default {
   parameters: { actions: { argTypesRegex: '^on.*' } }
 } as Meta;
 
-// 디자인 시스템으로 쓰이는 기본 버튼이 있다면 삭제 할 것.
-const Button = styled.button`
-  border: 1px solid #888;
-  border-radius: 3px;
-  background: linear-gradient(0deg, rgba(37,145,222,1) 0%, rgba(255,255,255,1) 90%);
-`;
-
-const actionHandlers = actions('onTestMethod1');
-
 const Template: StoryFn<StoryProps> = ({ ...props }) => {
   const ref = useRef<{{fileName}}Handle>(null);
 
-  const getInstance = () => {
-    const instance = ref.current;
-
-    if (instance) {
-      return instance;
-    }
-    throw new Error('not yet ready.');
-  }
-
   const handleTestMethod = () => {
-    const result = getInstance().method1();
-
-    actionHandlers.onTestMethod1(result);
+    
   };
 
   return (
     <div>
-      <Button onClick={handleTestMethod}>test method1</Button>
+      <Button onClick={() => {
+        const result = ref.current?.method1();
+
+        feedback.toast(result);
+      }}>test method1</Button>
       <{{fileName}} {...props} ref={ref}></{{fileName}}>
     </div>
   );
@@ -57,6 +40,6 @@ const Template: StoryFn<StoryProps> = ({ ...props }) => {
 export const Default: StoryObj<StoryProps> = {
   render: Template,
   args: {
-    
+    ...actions('onEvent1', 'onEvent2'),
   },
 };
