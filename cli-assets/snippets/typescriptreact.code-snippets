@@ -72,6 +72,7 @@
     "body": [
       "import { ReactNode } from 'react';",
       "import { useDispatch, useSelector } from 'react-redux';",
+      "import { AppDispatch } from '@common/store';",
       "import cn from 'clsx';",
       "",
       "// eslint-disable-next-line @typescript-eslint/no-empty-interface",
@@ -82,7 +83,7 @@
       "export function $TM_FILENAME_BASE({",
       "  children,",
       "}: $4) {",
-      "  const dispatch = useDispatch();",
+      "  const dispatch = useDispatch<AppDispatch>();",
       "  const state = useSelector();",
       "",
       "  return (",
@@ -99,6 +100,7 @@
     "body": [
       "import { ReactNode, forwardRef, useImperativeHandle, useState } from 'react';",
       "import { useDispatch, useSelector } from 'react-redux';",
+      "import { AppDispatch } from '@common/store';",
       "import cn from 'clsx';",
       "",
       "// eslint-disable-next-line @typescript-eslint/no-empty-interface",
@@ -114,7 +116,7 @@
       "  $5,",
       "  $4",
       ">(({ children }, ref) => {",
-      "  const dispatch = useDispatch();",
+      "  const dispatch = useDispatch<AppDispatch>();",
       "  const state = useSelector();",
       "  const [open, setOpen] = useState(false);",
       "  ",
@@ -188,7 +190,6 @@
       "",
       "export const ${2}: StoryObj<StoryProps> = {",
       "  render: ${2:Some}Template,",
-      "",
       "  args: {",
       "    ...Default.args,",
       "    ${0}",
@@ -202,7 +203,6 @@
     "body": [
       "export const ${2:Some}: StoryObj<StoryProps> = {",
       "  render: ${3:}Template,",
-      "",
       "  args: {",
       "    ...Default.args,",
       "    ${0}",
@@ -223,6 +223,4 @@
       "},"
     ]
   },
-
-
 }
