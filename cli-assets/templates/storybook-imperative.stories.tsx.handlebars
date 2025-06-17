@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 import { ComponentProps, useRef, useEffect } from 'react';
-import { actions } from '@storybook/addon-actions';
-import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react';
+import { actions } from 'storybook/actions';
+import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react-vite';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
@@ -21,18 +21,15 @@ export default {
 const Template: StoryFn<StoryProps> = ({ ...props }) => {
   const ref = useRef<{{fileName}}Handle>(null);
 
-  const handleTestMethod = () => {
-    
-  };
-
   return (
     <div>
+      <{{fileName}} {...props} ref={ref}></{{fileName}}>
+      
       <Button onClick={() => {
         const result = ref.current?.method1();
 
         feedback.toast(result);
       }}>test method1</Button>
-      <{{fileName}} {...props} ref={ref}></{{fileName}}>
     </div>
   );
 };
