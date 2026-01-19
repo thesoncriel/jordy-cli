@@ -1,5 +1,5 @@
 {
-  "Generate Single Selector": {
+  "deprecated - Generate Single Selector": {
     "prefix": "!selsingle",
     "description": "단일 셀렉터를 만든다.",
     "body": [
@@ -11,7 +11,7 @@
       ");"
     ]
   },
-  "Generate Single Draft Selector": {
+  "deprecated - Generate Single Draft Selector": {
     "prefix": "!seldrfsingle",
     "description": "단일 드래프트 셀렉터를 만든다. - 액션이나 이팩트에서 상태값을 셀렉팅 할 때 쓰인다.",
     "body": [
@@ -24,7 +24,7 @@
     ]
   },
   
-  "Generate Redux Toolkit - Single Effect": {
+  "deprecated - Generate Redux Toolkit - Single Effect": {
     "prefix": "!effsingle",
     "description": "단일 이펙트 함수를 만든다.",
     "body": [
@@ -38,7 +38,7 @@
       ");"
     ]
   },
-  "Generate Redux Toolkit - Single Effect With Redux Api": {
+  "deprecated - Generate Redux Toolkit - Single Effect With Redux Api": {
     "prefix": "!effsingleapi",
     "description": "단일 이펙트 함수를 만든다. Redux Api 가 포함되어 있다.",
     "body": [
@@ -56,7 +56,7 @@
       ");"
     ]
   },
-  "Generate Redux Toolkit - Single Effect With Redux Full Api": {
+  "deprecated - Generate Redux Toolkit - Single Effect With Redux Full Api": {
     "prefix": "!effsingleapifull",
     "description": "단일 이펙트 함수를 만든다. 모든 Redux Api 가 포함되어 있다.",
     "body": [
@@ -74,7 +74,7 @@
       ");"
     ]
   },
-  "Generate Redux Toolkit - Single Normal Action": {
+  "deprecated - Generate Redux Toolkit - Single Normal Action": {
     "prefix": "!actsingle",
     "description": "동기식 액션 하나를 만든다.",
     "body": [
@@ -84,7 +84,7 @@
     ]
   },
   
-  "Generate Redux Toolkit - Single Action Reducer": {
+  "deprecated - Generate Redux Toolkit - Single Action Reducer": {
     "prefix": "!sliceaction",
     "description": "슬라이스 내 액션 리듀서 하나를 만든다.",
     "body": [
@@ -93,7 +93,7 @@
       "},"
     ]
   },
-  "Generate Redux Toolkit - Multi Async Action Reducer": {
+  "deprecated - Generate Redux Toolkit - Multi Async Action Reducer": {
     "prefix": "!sliceaddcases",
     "description": "슬라이스 내 비동기 액션 리듀서 3종류를 만든다.",
     "body": [
@@ -109,7 +109,7 @@
       "})"
     ]
   },
-  "Generate Redux Toolkit - Single Async Action Reducer": {
+  "deprecated - Generate Redux Toolkit - Single Async Action Reducer": {
     "prefix": "!sliceaddcase",
     "description": "슬라이스 내 비동기 액션 리듀서 1개를 만든다.",
     "body": [
@@ -118,7 +118,7 @@
       "})",
     ]
   },
-  "Generate Reducer File": {
+  "deprecated - Generate Reducer File": {
     "prefix": "!reducersfile",
     "description": "기능 모듈의 리듀서 파일을 만든다.",
     "body": [
@@ -132,13 +132,14 @@
       "});",
     ]
   },
-  "Add Single Reducer": {
+  "deprecated - Add Single Reducer": {
     "prefix": "!reducer",
     "description": "기능 모듈의 리듀서 하나를 추가한다.",
     "body": [
       "${1:name}: ${TM_DIRECTORY/^.+\\/(.*)$/$1/}${1/(.*)/${0:/capitalize}/}Slice${0}.reducer,",
     ]
   },
+  
   "Generate Zustand Store": {
     "prefix": "!zustandstore",
     "description": "Zustand 스토어를 만든다.",
