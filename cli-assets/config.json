@@ -2,35 +2,12 @@
   "name": "jordy default architecture config set",
   "stores": {
     "storeSub": {
-      "base": "src/{{withFeature featureName}}/stores/{{subPath}}",
-      "excludes": ["core", "common"],
-      "files": [
-        {
-          "fileName": "{{fullName}}.effect.ts",
-          "template": "__defTemplates/store-sub-effect.ts.handlebars"
-        },
-        {
-          "fileName": "{{fullName}}.slice.ts",
-          "template": "__defTemplates/store-sub-slice.ts.handlebars"
-        },
-        {
-          "fileName": "{{fullName}}.selector.ts",
-          "template": "__defTemplates/store-sub-selector.ts.handlebars"
-        },
-        {
-          "fileName": "index.ts",
-          "template": "__defTemplates/store-sub-index.ts.handlebars"
-        }
-      ]
-    },
-    "storeRoot": {
       "base": "src/{{withFeature featureName}}/stores",
       "excludes": ["core", "common"],
       "files": [
         {
-          "fileName": "index.ts",
-          "template": "__defTemplates/store-index.ts.handlebars",
-          "appendLogic": "appendWithoutDuplicates"
+          "fileName": "use{{fullNameAsPascalCase}}Store.ts",
+          "template": "__defTemplates/store-sub-zustand.ts.handlebars"
         }
       ]
     },
@@ -38,15 +15,6 @@
       "base": "src/{{withFeature featureName}}",
       "excludes": ["core"],
       "files": [
-        {
-          "excludes": ["common"],
-          "fileName": "reducers.ts",
-          "template": "__defTemplates/reducers.ts.handlebars",
-          "appendLogic": "appendReducers"
-        },
-        {
-          "fileName": "manipulates/index.ts"
-        },
         {
           "fileName": "uiStates/index.ts"
         },
@@ -69,6 +37,9 @@
         {
           "excludes": ["shared"],
           "folderName": "pages"
+        },
+        {
+          "folderName": "manipulates"
         },
         {
           "excludes": ["common", "shared"],

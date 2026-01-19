@@ -47,7 +47,6 @@ export default async function codeGeneratorCLI() {
     .action((name, sub) => {
       const fileInfo = createFilePathParser().parse(name, sub);
 
-      service.makeAll(defConfig.stores.storeRoot, fileInfo);
       service.makeAll(defConfig.stores.storeSub, fileInfo);
       service.makeAll(defConfig.stores.featureRoot, fileInfo);
       service.makeAll(defConfig.stores.srcRoot, fileInfo);
@@ -64,7 +63,6 @@ export default async function codeGeneratorCLI() {
       const featureName = parser.extractFeatureName(path);
       const fileInfo = parser.parse(featureName, name);
 
-      service.makeAll(defConfig.stores.storeRoot, fileInfo);
       service.makeAll(defConfig.stores.storeSub, fileInfo);
       service.makeAll(defConfig.stores.featureRoot, fileInfo);
       service.makeAll(defConfig.stores.srcRoot, fileInfo);

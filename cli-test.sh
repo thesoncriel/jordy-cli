@@ -1,6 +1,7 @@
 npm run build
 npm run clean:src
 node bin feat lookpin theson
+node bin sub ./src/features/lookpin yotimer
 node bin ui sonicBoom/greenHill GreenHillZoneView
 node bin ui sonicBoom SonicRootView
 node bin sb ./src/common/components/tailsAdv/EmeraldHillZoneView.tsx

@@ -139,6 +139,46 @@
       "${1:name}: ${TM_DIRECTORY/^.+\\/(.*)$/$1/}${1/(.*)/${0:/capitalize}/}Slice${0}.reducer,",
     ]
   },
+  "Generate Zustand Store": {
+    "prefix": "!zustandstore",
+    "description": "Zustand 스토어를 만든다.",
+    "body": [
+      "import { create } from 'zustand';",
+      "",
+      "export interface ${TM_FILENAME_BASE/^use/${1:/capitalize}/g}UiModel {",
+      "  loading: boolean;",
+      "  reset(): void;",
+      "  ${0}",
+      "}",
+      "",
+      "export const ${TM_FILENAME_BASE}Store = create<${TM_FILENAME_BASE/^use/${1:/capitalize}/g}UiModel>((set, get) => {",
+      "  return {",
+      "    loading: true,",
+      "    reset: () => {",
+      "      set({ loading: true });",
+      "    },",
+      "    ${0}",
+      "  };",
+      "});",
+    ]
+  },
+  "Add Zustand Store Async Method": {
+    "prefix": "!zustandasync",
+    "description": "Zustand 스토어에 비동기 메서드를 추가한다.",
+    "body": [
+      "async ${1:fetch}(${2:params}) {",
+      "  set({ loading: true });",
+      "  try {",
+      "    const result = await ${1:fetch}(${2:params});",
+      "    set({ loading: false });",
+      "  } catch (error) {",
+      "    set({ loading: false });",
+      "    throw error;",
+      "  }",
+      "  ${0}",
+      "},",
+    ]
+  },
   "Generate Route File": {
     "prefix": "!routes",
     "description": "기능 모듈의 라우트 파일을 만든다.",

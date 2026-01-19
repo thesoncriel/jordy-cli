@@ -1,0 +1,28 @@
+import { create } from 'zustand';
+
+export interface {{fullNameAsPascalCase}}UiModel {
+  loading: boolean;
+
+  fetch(): Promise<void>;
+  reset(): void;
+}
+
+export const use{{fullNameAsPascalCase}}Store = create<{{fullNameAsPascalCase}}UiModel>((set, get) => {
+  return {
+    loading: true,
+
+    fetch: async () => {
+      set({ loading: true });
+      try {
+        const result = await fetchSomeData();
+        set({ loading: false });
+      } catch (error) {
+        set({ loading: false });
+        throw error;
+      }
+    },
+    reset: () => {
+      set({ loading: true });
+    },
+  };
+});
