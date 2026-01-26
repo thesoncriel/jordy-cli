@@ -3,7 +3,7 @@ import { ComponentProps, useRef, useEffect, useState } from 'react';
 import { actions } from 'storybook/actions';
 import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react-vite';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
-import { feedback } from '@core/feedback';
+import feedback from '@core/feedback';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
   defaultShow: boolean;
@@ -35,7 +35,7 @@ const Template: StoryFn<StoryProps> = ({ defaultShow, loading: outLoading, ...pr
       <Button onClick={() => ref.current?.open()}>열기</Button>
 
       <{{fileName}} {...props} loading={loading} ref={ref} onAccept={async args => {
-        actions.onAccept(args);
+        props.onAccept(args);
         setLoading(true);
         await timeout(1000);
         setLoading(false);
