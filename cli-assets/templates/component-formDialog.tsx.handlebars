@@ -1,0 +1,71 @@
+import { forwardRef, useImperativeHandle, useState } from 'react';
+import { timeout } from 'jordy';
+import cn from '@common/cn';
+
+interface {{fileName}}Props {
+  className?: string;
+  loading?: boolean;
+  onAccept: (args: SomeUiState) => void;
+  onError: (error: Error) => void;
+}
+
+export interface {{fileName}}Handle {
+  open(payload: SomeUiState): void;
+  close(): void;
+}
+
+export const {{fileName}} = forwardRef<
+  {{fileName}}Handle,
+  {{fileName}}Props
+>(({
+  className,
+  loading,
+  onAccept,
+  onError,
+  ...props,
+}, ref) => {
+  const [show, setShow] = useState(false);
+  const [state, setState] = useState<SomeUiState>({});
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      open(payload) {
+        setState(payload);
+        timeout(100, true).then(setShow);
+      },
+      close() {
+        setShow(false);
+      },
+    }),
+    [],
+  );
+
+  const handleCancel = () => {
+    if (loading) {
+      return;
+    }
+    setShow(false);
+  };
+
+  const handleOk = () => {
+    setShow(false);
+    onAccept(someValue);
+  };
+
+  return (
+    {/* TODO: 프로젝트 내에서 쓰이는 모달 or 다이얼로그 컴포넌트로 변경 할 것 */}
+    <Modal
+      loading={loading}
+      title="제목"
+      open={show}
+      cancelText="취소"
+      okText="확인"
+      onCancel={handleCancel}
+      onOk={handleOk}
+    >
+    </Modal>
+  );
+});
+
+{{fileName}}.displayName = '{{fileName}}';

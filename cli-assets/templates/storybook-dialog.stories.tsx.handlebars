@@ -1,10 +1,12 @@
 /* eslint-disable no-alert */
-import { ComponentProps, useRef, useEffect } from 'react';
+import { ComponentProps, useRef, useEffect, useState } from 'react';
 import { actions } from 'storybook/actions';
 import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react-vite';
 import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
+import { feedback } from '@core/feedback';
 
 interface StoryProps extends ComponentProps<typeof {{fileName}}> {
+  defaultShow: boolean;
 }
 
 type MyArgTypes = Partial<Record<keyof StoryProps, ArgTypes[string]>>;
@@ -18,14 +20,28 @@ export default {
   parameters: { actions: { argTypesRegex: '^on.*' } }
 } as Meta;
 
-const Template: StoryFn<StoryProps> = ({ ...props }) => {
+const Template: StoryFn<StoryProps> = ({ defaultShow, loading: outLoading, ...props }) => {
   const ref = useRef<{{fileName}}Handle>(null);
+  const [loading, setLoading] = useState(outLoading);
+
+  useEffect(() => {
+    if (defaultShow) {
+      ref.current?.open();
+    }
+  }, [defaultShow]);
 
   return (
     <div>
       <Button onClick={() => ref.current?.open()}>열기</Button>
 
-      <{{fileName}} {...props} ref={ref}></{{fileName}}>
+      <{{fileName}} {...props} loading={loading} ref={ref} onAccept={async args => {
+        actions.onAccept(args);
+        setLoading(true);
+        await timeout(1000);
+        setLoading(false);
+        ref.current?.close();
+        feedback.toast.success('완료!');
+      }}></{{fileName}}>
     </div>
   );
 };
@@ -33,7 +49,7 @@ const Template: StoryFn<StoryProps> = ({ ...props }) => {
 export const Default: StoryObj<StoryProps> = {
   render: Template,
   args: {
-    ...actions('onEvent1', 'onEvent2'),
+    ...actions('onAccept'),
     defaultShow: true,
   },
 };
@@ -43,5 +59,13 @@ export const WithTrigger: StoryObj<StoryProps> = {
   args: {
     ...Default.args,
     defaultShow: false,
+  },
+};
+
+export const WithLoading: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    ...Default.args,
+    loading: true,
   },
 };

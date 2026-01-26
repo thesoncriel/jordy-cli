@@ -1,16 +1,15 @@
-import { ReactNode, forwardRef, useImperativeHandle, useState, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import cn from '@common/cn';
 
 interface {{fileName}}Props {
   className?: string;
-  defaultShow?: boolean;
-  children?: ReactNode;
+  loading?: boolean;
   onAccept: (args: SomeUiState) => void;
-  onClose: () => void;
 }
 
 export interface {{fileName}}Handle {
   open(payload: SomeUiState): void;
+  close(): void;
 }
 
 export const {{fileName}} = forwardRef<
@@ -18,18 +17,20 @@ export const {{fileName}} = forwardRef<
   {{fileName}}Props
 >(({
   className,
-  defaultShow = false,
-  children,
+  loading,
   onAccept,
   ...props,
 }, ref) => {
-  const [show, setShow] = useState(defaultShow);
+  const [show, setShow] = useState(false);
 
   useImperativeHandle(
     ref,
     () => ({
       open(payload) {
         setShow(true);
+      },
+      close() {
+        setShow(false);
       },
     }),
     [],
@@ -47,6 +48,7 @@ export const {{fileName}} = forwardRef<
   return (
     {/* TODO: 프로젝트 내에서 쓰이는 모달 or 다이얼로그 컴포넌트로 변경 할 것 */}
     <Modal
+      loading={loading}
       title="제목"
       open={show}
       cancelText="취소"
@@ -54,7 +56,6 @@ export const {{fileName}} = forwardRef<
       onCancel={handleCancel}
       onOk={handleOk}
     >
-      {children}
     </Modal>
   );
 });

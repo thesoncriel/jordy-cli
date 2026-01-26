@@ -76,7 +76,7 @@ export default async function codeGeneratorCLI() {
     .argument('<name>', 'ui-component name')
     .argument(
       '[type]',
-      'one of normal, dialog, dialogWithResolver, imperative, memo, antdTable (default normal)',
+      'one of normal, dialog, dialogWithResolver, formDialog, imperative, memo, antdTable (default normal)',
     )
     .action((path, name, type) => {
       const parser = createFilePathParser();
@@ -94,7 +94,10 @@ export default async function codeGeneratorCLI() {
   program
     .command('sb')
     .argument('<path>', 'component path')
-    .argument('[type]', 'one of normal, dialog, imperative (default normal)')
+    .argument(
+      '[type]',
+      'one of normal, dialog, formDialog, imperative (default normal)',
+    )
     .action((path, type) => {
       const parser = createFilePathParser();
       const fileInfo = parser.parse(path);

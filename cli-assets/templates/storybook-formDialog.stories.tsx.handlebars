@@ -1,0 +1,75 @@
+/* eslint-disable no-alert */
+import { ComponentProps, useRef, useEffect, useState } from 'react';
+import { actions } from 'storybook/actions';
+import { StoryFn, StoryObj, Meta, ArgTypes } from '@storybook/react-vite';
+import { {{fileName}}, {{fileName}}Handle } from '../{{fileName}}';
+
+interface StoryProps extends ComponentProps<typeof {{fileName}}> {
+  defaultShow: boolean;
+  testState: SomeUiState;
+}
+
+type MyArgTypes = Partial<Record<keyof StoryProps, ArgTypes[string]>>;
+const argTypesSetting: MyArgTypes = {
+};
+
+export default {
+  title: '{{storybookTitle}}/{{fileName}}',
+  component: {{fileName}},
+  argTypes: argTypesSetting,
+  parameters: { actions: { argTypesRegex: '^on.*' } }
+} as Meta;
+
+const Template: StoryFn<StoryProps> = ({ defaultShow, testState, loading: outLoading, ...props }) => {
+  const ref = useRef<{{fileName}}Handle>(null);
+  const [loading, setLoading] = useState(outLoading);
+
+  useEffect(() => {
+    if (defaultShow) {
+      ref.current?.open(testState);
+    }
+  }, [defaultShow, testState]);
+
+  return (
+    <div>
+      <Button onClick={() => ref.current?.open(testState)}>열기</Button>
+
+      <{{fileName}} {...props} loading={loading} ref={ref} onAccept={async args => {
+        actions.onAccept(args);
+        setLoading(true);
+        await timeout(1000);
+        setLoading(false);
+        ref.current?.close();
+        feedback.toast.success('완료!');
+      }} onError={error => {
+        actions.onError(error);
+        feedback.toast.error('실패!');
+      }}></{{fileName}}>
+    </div>
+  );
+};
+
+export const Default: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    ...actions('onAccept', 'onError'),
+    defaultShow: true,
+    testState: {},
+  },
+};
+
+export const WithTrigger: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    ...Default.args,
+    defaultShow: false,
+  },
+};
+
+export const WithLoading: StoryObj<StoryProps> = {
+  render: Template,
+  args: {
+    ...Default.args,
+    loading: true,
+  },
+};
